@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="pro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#150826" />
+  <title>Prodigy Kit — 10 days of zero-ad in-browser tools</title>
+  <meta name="description" content="PDF merge, image compressor, EXIF scrubber, encrypted vault, QR studio, AI background remover, Markdown→PDF, link stripper, crypto kit, media extractor. All in your browser, no uploads, no tracking." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Prodigy Kit" />
+  <meta property="og:description" content="10 days of zero-ad, zero-track, in-browser tools." />
+  <meta property="og:type" content="website" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Pacifico&family=JetBrains+Mono:wght@400;500;600&family=Quicksand:wght@500;600;700&family=Nunito:wght@400;500;600;700&family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="./assets/styles/tokens.css" />
+  <link rel="stylesheet" href="./assets/styles/base.css" />
+  <link rel="stylesheet" href="./assets/styles/shell.css" />
+
+  <!-- Lucide Icons (auto-replaces <i data-lucide="..."> with SVG) -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+</head>
+<body>
+  <div class="pk-scanlines" aria-hidden="true"></div>
+
+  <div class="pk-root">
+    <!-- ============== TOP BAR ============== -->
+    <header class="pk-topbar">
+      <div class="pk-container pk-topbar__inner">
+        <a href="./index.html" class="pk-logo" aria-label="Prodigy Kit home">
+          <span class="pk-logo__mark">
+            <i data-lucide="gem"></i>
+          </span>
+          <span class="pk-logo__brand">
+            <span class="pk-logo__brand-main">Prodigy Kit</span>
+          </span>
+        </a>
+        <div class="pk-topbar__actions">
+          <!-- Command Palette Trigger -->
+          <button class="pk-cmdk-trigger" data-action="open-cmdk" aria-label="Open command palette">
+            <i data-lucide="search"></i>
+            <span class="pk-cmdk-trigger__label">Search tools…</span>
+            <kbd class="pk-cmdk-trigger__kbd">⌘K</kbd>
+          </button>
+
+          <!-- Theme Switcher -->
+          <div class="pk-themeswitch" role="group" aria-label="Theme switcher">
+            <button class="pk-themeswitch__btn" data-theme="pro" aria-label="Pro Mode" aria-pressed="true" title="Pro Mode">
+              <i data-lucide="briefcase"></i>
+            </button>
+            <button class="pk-themeswitch__btn" data-theme="arcade" aria-label="Arcade Mode" aria-pressed="false" title="Arcade Mode">
+              <i data-lucide="gamepad-2"></i>
+            </button>
+            <button class="pk-themeswitch__btn" data-theme="pookie" aria-label="Pookie Mode" aria-pressed="false" title="Pookie Mode">
+              <i data-lucide="heart"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============== MAIN CONTENT ============== -->
+    <main class="pk-main">
+      <div class="pk-container pk-view">
+
+        <!-- ============== ONBOARDING BANNER ============== -->
+        <div class="pk-onboarding" id="onboarding-banner" style="display:none">
+          <div class="pk-onboarding__icon">🔒</div>
+          <div class="pk-onboarding__text">
+            <strong>Everything here runs in your browser.</strong>
+            No uploads, no servers, no tracking. Pick any tool below.
+          </div>
+          <button class="pk-onboarding__close" data-action="dismiss-onboarding">Got it</button>
+        </div>
+
+        <!-- ============== HERO SECTION ============== -->
+        <div class="pk-section-head">
+          <div>
+            <h1 class="pk-section-head__title">10 days. 10 tools. Zero backend.</h1>
+            <p class="pk-section-head__subtitle">
+              All 10 tools are LIVE. Press ⌘K to search or pick one below.
+            </p>
+          </div>
+          <a href="./credits.html" class="pk-section-head__back">
+            <i data-lucide="award"></i>
+            Credits
+          </a>
+        </div>
+
+        <!-- ============== BENTO DASHBOARD ============== -->
+        <div class="pk-bento" id="bento-grid">
+          <!-- Cards injected by app.js -->
+        </div>
+
+        <!-- ============== INFO SECTION ============== -->
+        <div class="pk-card pk-mt-4">
+          <div class="pk-flex pk-gap-3" style="flex-wrap:wrap;align-items:center">
+            <div style="flex:1;min-width:240px">
+              <h3 style="font-size:1rem;margin-bottom:0.5rem">Why no servers?</h3>
+              <p class="pk-text-sm pk-text-muted">
+                Because every "free" online converter you've ever used has 15 fake green
+                "Download" buttons, holds your file hostage, and probably sells your data.
+                Prodigy Kit does <strong>100% of the file processing in your browser's CPU/RAM</strong>
+                via WebAssembly. Nothing leaves your device. Open Inspect → Network and watch the silence.
+              </p>
+            </div>
+            <div style="text-align:center;font-family:var(--pk-font-mono);font-size:0.75rem;color:var(--pk-fg-subtle)">
+              <div style="font-size:2rem;font-weight:700;color:var(--pk-accent);margin-bottom:0.25rem">0</div>
+              <div>SERVERS</div>
+              <div>0 DATABASES</div>
+              <div>0 TRACKERS</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- ============== FOOTER ============== -->
+    <footer class="pk-footer">
+      <div class="pk-container pk-footer__inner">
+        <div class="pk-footer__brand">
+          <span>Prodigy Kit</span> · 10 days · 100% in-browser · <span>no tracking</span>
+        </div>
+        <div class="pk-footer__links">
+          <a href="./credits.html">Credits</a>
+          <a href="https://github.com" target="_blank" rel="noopener">Source</a>
+          <a href="#" data-action="reset-progress">Reset progress</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ============== BOTTOM NAV (MOBILE) ============== -->
+    <nav class="pk-bottomnav" aria-label="Tool navigation">
+      <button class="pk-bottomnav__btn pk-bottomnav__home" data-action="home" aria-label="Home" aria-pressed="true">
+        <i data-lucide="home"></i>
+      </button>
+      <div class="pk-bottomnav__scroll" id="bottomnav-scroll">
+        <!-- Day buttons injected by app.js -->
+      </div>
+      <button class="pk-bottomnav__btn" data-action="open-cmdk" aria-label="Search">
+        <i data-lucide="search"></i>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ============== COMMAND PALETTE OVERLAY ============== -->
+  <div class="pk-cmdk-overlay" id="cmdk-overlay" data-open="false" role="dialog" aria-modal="true" aria-label="Command palette">
+    <div class="pk-cmdk-panel">
+      <input type="text" class="pk-cmdk-input" id="cmdk-input" placeholder="Type a tool name or day number…" autocomplete="off" spellcheck="false" />
+      <div class="pk-cmdk-list" id="cmdk-list" role="listbox"></div>
+    </div>
+  </div>
+
+  <!-- ============== TOAST STACK ============== -->
+  <div class="pk-toast-stack" id="pk-toast-stack" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ============== APP SCRIPT (ES Module) ============== -->
+  <script type="module" src="./assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="pro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#150826" />
+  <title>Credits — Prodigy Kit</title>
+  <meta name="description" content="The humans, libraries, and inspirations behind Prodigy Kit. Created & vibe-coded by R Dinesh." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Pacifico&family=JetBrains+Mono:wght@400;500;600&family=Quicksand:wght@500;600;700&family=Nunito:wght@400;500;600;700&family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="./assets/styles/tokens.css" />
+  <link rel="stylesheet" href="./assets/styles/base.css" />
+  <link rel="stylesheet" href="./assets/styles/shell.css" />
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+</head>
+<body>
+  <div class="pk-scanlines" aria-hidden="true"></div>
+
+  <div class="pk-root">
+    <!-- ============== TOP BAR ============== -->
+    <header class="pk-topbar">
+      <div class="pk-container pk-topbar__inner">
+        <a href="./index.html" class="pk-logo" aria-label="Prodigy Kit home">
+          <span class="pk-logo__mark"><i data-lucide="gem"></i></span>
+          <span class="pk-logo__brand">
+            <span class="pk-logo__brand-main">Prodigy Kit</span>
+          </span>
+        </a>
+        <div class="pk-topbar__actions">
+          <a href="./index.html" class="pk-cmdk-trigger">
+            <i data-lucide="arrow-left"></i>
+            <span class="pk-cmdk-trigger__label">Back to Dashboard</span>
+          </a>
+          <div class="pk-themeswitch" role="group" aria-label="Theme switcher">
+            <button class="pk-themeswitch__btn" data-theme="pro" aria-label="Pro Mode" aria-pressed="true" title="Pro Mode">
+              <i data-lucide="briefcase"></i>
+            </button>
+            <button class="pk-themeswitch__btn" data-theme="arcade" aria-label="Arcade Mode" aria-pressed="false" title="Arcade Mode">
+              <i data-lucide="gamepad-2"></i>
+            </button>
+            <button class="pk-themeswitch__btn" data-theme="pookie" aria-label="Pookie Mode" aria-pressed="false" title="Pookie Mode">
+              <i data-lucide="heart"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============== MAIN ============== -->
+    <main class="pk-main">
+      <div class="pk-container">
+
+        <!-- ============== HERO ============== -->
+        <div class="pk-credits-hero">
+          <h1>Credits</h1>
+          <p>The humans, libraries, and sarcastic gratitude behind Prodigy Kit.</p>
+        </div>
+
+        <!-- ============== BUILDER ============== -->
+        <section class="pk-credits-section">
+          <h2><i data-lucide="user-cog"></i> Builder & Project Identity</h2>
+          <div class="pk-credits-builder">
+            <div class="pk-credits-builder__avatar">RD</div>
+            <div class="pk-credits-builder__info">
+              <h3 class="pk-credits-builder__name">R Dinesh</h3>
+              <p class="pk-credits-builder__role">
+                Cyber Security Student · Chief Vibe-Coder · Occasional Bug Generator
+              </p>
+              <div class="pk-credits-builder__links">
+                <a href="https://github.com/rdineshd176-png" target="_blank" rel="noopener">
+                  <i data-lucide="github"></i> GitHub
+                </a>
+                <a href="https://www.linkedin.com/in/dinesh-r-cybersec/" target="_blank" rel="noopener">
+                  <i data-lucide="linkedin"></i> LinkedIn
+                </a>
+                <a href="https://github.com/rdineshd176-png/Prodigy-Kit" target="_blank" rel="noopener">
+                  <i data-lucide="folder-git-2"></i> Source Code Repo
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="pk-credits-quote">
+            "Built out of pure frustration because dodging 15 fake green 'Download' buttons just to merge a college assignment should be illegal."
+          </div>
+        </section>
+
+        <!-- ============== LIBRARIES ============== -->
+        <section class="pk-credits-section">
+          <h2><i data-lucide="package"></i> Open-Source Libraries (The Heavy Lifters)</h2>
+
+          <h3 style="font-size:0.95rem;color:var(--pk-fg-strong);margin:1rem 0 0.5rem">PDF & Document Engines</h3>
+          <ul class="pk-credits-list">
+            <li>
+              <a href="https://github.com/Hopding/pdf-lib" target="_blank" rel="noopener">
+                <i data-lucide="file-text"></i> pdf-lib
+                <i data-lucide="external-link"></i>
+              </a>
+              <span class="pk-text-muted">Merging & splitting PDFs in pure JavaScript</span>
+            </li>
+            <li>
+              <a href="https://github.com/mozilla/pdf.js" target="_blank" rel="noopener">
+                <i data-lucide="file-text"></i> Mozilla PDF.js
+                <i data-lucide="external-link"></i>
+              </a>
+              <span class="pk-text-muted">Rendering PDF pages in the browser</span>
+            </li>
+            <li>
+              <a href="https://github.com/markedjs/marked" target="_blank" rel="noopener">
+                <i data-lucide="file-text"></i> marked.js
+                <i data-lucide="external-link"></i>
+              </a>
+              <span class="pk-text-muted">Markdown parsing for live preview</span>
+            </li>
+            <li>
+              <a href="https://github.com/eKoopmans/html2pdf.js" target="_blank" rel="noopener">
+                <i data-lucide="file-text"></i> html2pdf.js
+                <i data-lucide="external-link"></i>
+              </a>
+              <span class="pk-text-muted">HTML → PDF via jsPDF + html2canvas</span>
+            </li>
+          </ul>
+
+          <h3 style="font-size:0.95rem;color:var(--pk-fg-strong);margin:1.5rem 0 0.5rem">Image & AI Processing</h3>
+          <ul class="pk-credits-list">
+            <li>
+              <a href="https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API" target="_blank" rel="noopener">
+                <i data-lucide="image"></i> HTML5 Canvas API
+                <i data-lucide="external-link"></i>
+              </a>
+              <span class="pk-text-muted">Strict-size compression via binary search</span>
+            </li>
+            <li>
+              <a href="https://github.com/mattiasw/ExifReader" target="_blank" rel="noopener">
+                <i data-lucide="image"></i> ExifReader
+                <i data-lucide="external-link"></i>
+              </a>
+              <span class="pk-text-muted">EXIF/IPTC/XMP metadata inspection & scrubbing</span>
+            </li>
+            <li>
+              <a href="https://github.com/imgly/background-removal-js" target="_blank" rel="noopener">
+                <i data-lucide="image"></i> @imgly/background-removal
+                <i data-lucide="external-link"></i>
+              </a>
+              <span class="pk-text-muted">In-browser AI cutouts via WebAssembly</span>
+            </li>
+          </ul>
+
+          <h3 style="font-size:0.95rem;color:var(--pk-fg-strong);margin:1.5rem 0 0.5rem">Media & QR Utilities</h3>
+          <ul class="pk-credits-list">
+            <li>
+              <a href="https://github.com/ffmpegwasm/ffmpeg.wasm" target="_blank" rel="noopener">
+                <i data-lucide="film"></i> FFmpeg.wasm
+                <i data-lucide="external-link"></i>
+              </a>
+              <span class="pk-text-muted">Local audio extraction & video trimming</span>
+            </li>
+            <li>
+              <a href="https://github.com/soldair/node-qrcode" target="_blank" rel="noopener">
+                <i data-lucide="qr-code"></i> qrcode.js
+                <i data-lucide="external-link"></i>
+              </a>
+              <span class="pk-text-muted">Zero-expiration QR code generation</span>
+            </li>
+          </ul>
+
+          <h3 style="font-size:0.95rem;color:var(--pk-fg-strong);margin:1.5rem 0 0.5rem">Security & Crypto</h3>
+          <ul class="pk-credits-list">
+            <li>
+              <a href="https://developer.mozilla.org/en-US/docs/Web/API/Crypto" target="_blank" rel="noopener">
+                <i data-lucide="lock"></i> Web Crypto API
+                <i data-lucide="external-link"></i>
+              </a>
+              <span class="pk-text-muted">Native browser AES-GCM + PBKDF2 (Day 4 Vault)</span>
+            </li>
+            <li>
+              <a href="https://github.com/brix/crypto-js" target="_blank" rel="noopener">
+                <i data-lucide="lock"></i> CryptoJS
+                <i data-lucide="external-link"></i>
+              </a>
+              <span class="pk-text-muted">Hashing, encoding, and crypto for the Dev/CTF workbench</span>
+            </li>
+          </ul>
+        </section>
+
+        <!-- ============== UI / FONTS / INFRA ============== -->
+        <section class="pk-credits-section">
+          <h2><i data-lucide="palette"></i> UI, Fonts & Infrastructure</h2>
+
+          <h3 style="font-size:0.95rem;color:var(--pk-fg-strong);margin:1rem 0 0.5rem">Hosting & Compute</h3>
+          <ul class="pk-credits-list">
+            <li>
+              <a href="https://netlify.com" target="_blank" rel="noopener">
+                <i data-lucide="cloud"></i> Netlify
+                <i data-lucide="external-link"></i>
+              </a>
+              <span class="pk-text-muted">Static file hosting at the edge</span>
+            </li>
+            <li>
+              <span style="font-weight:500;color:var(--pk-fg-strong);font-size:0.875rem">
+                <i data-lucide="cpu" style="width:12px;height:12px;display:inline"></i> Your Device's CPU / RAM
+              </span>
+              <span class="pk-text-muted">Doing 100% of the actual file processing locally</span>
+            </li>
+          </ul>
+
+          <h3 style="font-size:0.95rem;color:var(--pk-fg-strong);margin:1.5rem 0 0.5rem">Icons & Styling</h3>
+          <ul class="pk-credits-list">
+            <li>
+              <a href="https://lucide.dev" target="_blank" rel="noopener">
+                <i data-lucide="shapes"></i> Lucide Icons
+                <i data-lucide="external-link"></i>
+              </a>
+              <span class="pk-text-muted">Clean, consistent SVG icon set</span>
+            </li>
+            <li>
+              <span style="font-weight:500;color:var(--pk-fg-strong);font-size:0.875rem">
+                <i data-lucide="code-2" style="width:12px;height:12px;display:inline"></i> Pure HTML5, CSS3 Variables, Vanilla JavaScript
+              </span>
+              <span class="pk-text-muted">No React, no Tailwind, no build step — just the web platform</span>
+            </li>
+          </ul>
+
+          <h3 style="font-size:0.95rem;color:var(--pk-fg-strong);margin:1.5rem 0 0.5rem">Multi-Theme Typography (Google Fonts)</h3>
+          <ul class="pk-credits-list">
+            <li>
+              <a href="https://fonts.google.com/specimen/Press+Start+2P" target="_blank" rel="noopener">
+                <i data-lucide="gamepad-2"></i> Press Start 2P
+                <i data-lucide="external-link"></i>
+              </a>
+              <span class="pk-text-muted">🕹️ Arcade Mode headings</span>
+            </li>
+            <li>
+              <a href="https://www.jetbrains.com/lp/mono/" target="_blank" rel="noopener">
+                <i data-lucide="gamepad-2"></i> JetBrains Mono
+                <i data-lucide="external-link"></i>
+              </a>
+              <span class="pk-text-muted">🕹️ Arcade Mode body & code</span>
+            </li>
+            <li>
+              <a href="https://fonts.google.com/specimen/Quicksand" target="_blank" rel="noopener">
+                <i data-lucide="heart"></i> Quicksand
+                <i data-lucide="external-link"></i>
+              </a>
+              <span class="pk-text-muted">🎀 Pookie Mode headings</span>
+            </li>
+            <li>
+              <a href="https://fonts.google.com/specimen/Nunito" target="_blank" rel="noopener">
+                <i data-lucide="heart"></i> Nunito
+                <i data-lucide="external-link"></i>
+              </a>
+              <span class="pk-text-muted">🎀 Pookie Mode body</span>
+            </li>
+            <li>
+              <a href="https://rsms.me/inter/" target="_blank" rel="noopener">
+                <i data-lucide="briefcase"></i> Inter
+                <i data-lucide="external-link"></i>
+              </a>
+              <span class="pk-text-muted">💼 Pro Mode — everything</span>
+            </li>
+          </ul>
+          <p class="pk-text-sm pk-text-muted pk-mt-2">
+            Served via <a href="https://fonts.google.com" target="_blank" rel="noopener" style="color:var(--pk-accent)">Google Fonts</a>.
+          </p>
+        </section>
+
+        <!-- ============== SARCASTIC THANKS ============== -->
+        <section class="pk-credits-section">
+          <h2><i data-lucide="party-popper"></i> Sarcastic "Special Thanks" & Privacy Copy</h2>
+
+          <h3 style="font-size:0.95rem;color:var(--pk-fg-strong);margin:1rem 0 0.5rem">The Anti-Credits (Inspiration)</h3>
+          <div class="pk-credits-quote">
+            Sketchy free converter websites with pop-up ads, "free" QR generators that hold your link hostage after 7 days, and government/college portals that still demand photos between 20KB and 50KB. You are the villains this toolkit was built to defeat.
+          </div>
+
+          <h3 style="font-size:0.95rem;color:var(--pk-fg-strong);margin:1.5rem 0 0.5rem">The Zero-Trust Guarantee & Beta Squad</h3>
+          <div class="pk-credits-quote">
+            "0 servers. 0 databases. 0 tracking scripts. Don't take my word for it — open Inspect → Network and watch the silence. Special shoutout to the lab squad for beta-testing and trying to break the UI across all three themes."
+          </div>
+        </section>
+
+        <!-- ============== FOOTER ============== -->
+        <div class="pk-credits-section" style="text-align:center;padding:2rem 0 0;border-top:1px solid var(--pk-card-border)">
+          <p class="pk-text-xs pk-text-subtle pk-text-mono">
+            Prodigy Kit · 10 days · 10 tools · zero backend · no tracking
+          </p>
+          <p class="pk-text-xs pk-text-subtle pk-mt-2">
+            MIT-licensed — fork it, learn from it, ship it as your own.
+          </p>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- ============== FOOTER ============== -->
+    <footer class="pk-footer">
+      <div class="pk-container pk-footer__inner">
+        <div class="pk-footer__brand">
+          <span>Prodigy Kit</span> · 10 days · 100% in-browser · <span>no tracking</span>
+        </div>
+        <div class="pk-footer__links">
+          <a href="./index.html">Dashboard</a>
+          <a href="https://github.com" target="_blank" rel="noopener">Source</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ============== TOAST STACK ============== -->
+  <div class="pk-toast-stack" id="pk-toast-stack" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ============== APP SCRIPT ============== -->
+  <script type="module">
+    import { hydrate, getState, subscribe, setTheme } from "./assets/lib/store.js";
+
+    const LOGO_ICONS = { pro: "gem", arcade: "trophy", pookie: "sparkles" };
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      const themeColor = theme === "pookie" ? "#fef6f9" : theme === "arcade" ? "#050208" : "#150826";
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute("content", themeColor);
+      document.querySelectorAll(".pk-themeswitch__btn").forEach((btn) => {
+        btn.setAttribute("aria-pressed", String(btn.dataset.theme === theme));
+      });
+      const logoMark = document.querySelector(".pk-logo__mark");
+      if (logoMark) {
+        logoMark.innerHTML = `<i data-lucide="${LOGO_ICONS[theme] || "gem"}"></i>`;
+      }
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function init() {
+      hydrate();
+      applyTheme(getState().theme);
+      document.querySelectorAll(".pk-themeswitch__btn").forEach((btn) => {
+        btn.addEventListener("click", () => setTheme(btn.dataset.theme));
+      });
+      subscribe("theme", (state) => applyTheme(state.theme));
+      if (window.lucide) window.lucide.createIcons();
+      else window.addEventListener("load", () => window.lucide && window.lucide.createIcons());
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>

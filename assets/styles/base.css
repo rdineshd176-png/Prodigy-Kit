@@ -1,0 +1,220 @@
+/* =========================================================================
+   Prodigy Kit — Base Styles
+   Reset, typography defaults, animated aurora background, scanlines
+   ========================================================================= */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--pk-font-body);
+  color: var(--pk-fg);
+  background: var(--pk-bg-base);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background var(--pk-dur) var(--pk-ease), color var(--pk-dur) var(--pk-ease);
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Animated aurora background — three drifting orbs + gradient base */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(ellipse 100% 60% at 50% 0%, var(--pk-bg-grad-2) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 50% at 0% 100%, var(--pk-bg-grad-3) 0%, transparent 60%),
+    linear-gradient(180deg, var(--pk-bg-grad-1) 0%, var(--pk-bg-base) 100%);
+  transition: background var(--pk-dur) var(--pk-ease);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle 400px at 20% 30%, var(--pk-orb-1) 0%, transparent 70%),
+    radial-gradient(circle 500px at 80% 70%, var(--pk-orb-2) 0%, transparent 70%),
+    radial-gradient(circle 350px at 50% 50%, var(--pk-orb-3) 0%, transparent 70%);
+  opacity: 0.35;
+  filter: blur(80px);
+  animation: pk-orb-drift 30s ease-in-out infinite;
+  transition: opacity var(--pk-dur) var(--pk-ease);
+}
+
+@keyframes pk-orb-drift {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(3vw, -2vh) scale(1.05);
+  }
+  66% {
+    transform: translate(-2vw, 3vh) scale(0.95);
+  }
+}
+
+/* Retro: add scanlines */
+[data-theme="retro"] body::after {
+  opacity: 0.5;
+  filter: blur(40px);
+}
+
+[data-theme="retro"] body .pk-scanlines,
+[data-theme="retro"] .pk-scanlines {
+  display: block;
+}
+
+.pk-scanlines {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, var(--pk-scanline-opacity, 0)) 0px,
+    rgba(0, 0, 0, var(--pk-scanline-opacity, 0)) 1px,
+    rgba(0, 0, 0, 0.4) 2px,
+    rgba(0, 0, 0, 0) 3px
+  );
+  mix-blend-mode: multiply;
+}
+
+/* Typography defaults */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--pk-font-head);
+  font-weight: 600;
+  color: var(--pk-fg-strong);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  transition: color var(--pk-dur) var(--pk-ease);
+}
+
+[data-theme="retro"] h1, [data-theme="retro"] h2, [data-theme="retro"] h3 {
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+p, li, span, label {
+  font-family: var(--pk-font-body);
+}
+
+code, pre, .pk-mono {
+  font-family: var(--pk-font-mono);
+}
+
+a {
+  color: var(--pk-accent);
+  text-decoration: none;
+  transition: color var(--pk-dur-fast) var(--pk-ease);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+input, textarea, select {
+  background: transparent;
+  border: 1px solid var(--pk-border);
+  border-radius: var(--pk-radius-sm);
+  padding: 0.625rem 0.875rem;
+  outline: none;
+  transition: border var(--pk-dur-fast) var(--pk-ease), box-shadow var(--pk-dur-fast) var(--pk-ease);
+  color: var(--pk-fg);
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--pk-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--pk-accent) 30%, transparent);
+}
+
+[data-theme="retro"] input,
+[data-theme="retro"] textarea,
+[data-theme="retro"] select {
+  border-width: 2px;
+  border-style: solid;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--pk-border-strong);
+  border-radius: var(--pk-radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--pk-accent);
+}
+
+/* Selection */
+::selection {
+  background: color-mix(in srgb, var(--pk-accent) 40%, transparent);
+  color: var(--pk-fg-strong);
+}
+
+/* Utility */
+.pk-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.pk-container {
+  max-width: var(--pk-content-max);
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .pk-container {
+    padding: 0 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .pk-container {
+    padding: 0 2.5rem;
+  }
+}

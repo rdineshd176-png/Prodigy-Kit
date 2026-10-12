@@ -1,0 +1,189 @@
+/* =========================================================================
+   Prodigy Kit — Design Tokens
+   Three modes: pro (cyber-indigo + cyan), arcade (8-bit neon), pookie (pastel)
+   ========================================================================= */
+
+/* ============== PRO MODE (default — cyber-indigo + electric cyan) ============== */
+:root,
+[data-theme="pro"] {
+  /* Page background — deep saturated cyber-indigo */
+  --pk-bg-base: #150826;
+  --pk-bg-grad-1: #1a0b2e;
+  --pk-bg-grad-2: #2d1b4e;
+  --pk-bg-grad-3: #0d0418;
+
+  /* Floating gradient orbs (lavender + cyan + pink) */
+  --pk-orb-1: #c084fc;
+  --pk-orb-2: #00ffd5;
+  --pk-orb-3: #f0abfc;
+
+  /* Glass card surface */
+  --pk-card-bg: rgba(30, 15, 50, 0.55);
+  --pk-card-bg-strong: rgba(45, 22, 70, 0.85);
+  --pk-card-border: rgba(255, 255, 255, 0.08);
+  --pk-card-border-strong: rgba(0, 255, 213, 0.4);
+  --pk-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --pk-card-blur: blur(20px) saturate(180%);
+  --pk-card-blur-fallback: rgba(30, 15, 50, 0.92);
+
+  /* Foreground */
+  --pk-fg: #f5f3ff;
+  --pk-fg-strong: #ffffff;
+  --pk-fg-muted: rgba(245, 243, 255, 0.65);
+  --pk-fg-subtle: rgba(245, 243, 255, 0.38);
+
+  /* Brand text colors */
+  --pk-brand-grad-1: #c084fc;
+  --pk-brand-grad-2: #00ffd5;
+  --pk-brand-subtle: #a78bfa;
+
+  /* Radii */
+  --pk-radius-sm: 8px;
+  --pk-radius: 14px;
+  --pk-radius-lg: 20px;
+  --pk-radius-xl: 28px;
+  --pk-radius-full: 9999px;
+
+  /* Borders */
+  --pk-border: rgba(255, 255, 255, 0.08);
+  --pk-border-strong: rgba(0, 255, 213, 0.5);
+
+  /* Per-category accent hues */
+  --pk-accent-pdf: #00ffd5;
+  --pk-accent-images: #c084fc;
+  --pk-accent-privacy: #10b981;
+  --pk-accent-generators: #fcd34d;
+  --pk-accent-media: #f0abfc;
+  --pk-accent: var(--pk-accent-pdf);
+
+  /* Typography — Inter for everything in Pro Mode */
+  --pk-font-head: "Inter", system-ui, -apple-system, sans-serif;
+  --pk-font-body: "Inter", system-ui, -apple-system, sans-serif;
+  --pk-font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Sizing */
+  --pk-topbar-h: 64px;
+  --pk-bottomnav-h: 64px;
+  --pk-content-max: 1280px;
+
+  /* Motion */
+  --pk-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --pk-dur-fast: 150ms;
+  --pk-dur: 250ms;
+  --pk-dur-slow: 400ms;
+
+  /* Glow effect */
+  --pk-glow: 0 0 24px rgba(0, 255, 213, 0.35);
+  --pk-glow-strong: 0 0 40px rgba(0, 255, 213, 0.5), 0 0 80px rgba(192, 132, 252, 0.3);
+
+  /* Scanline overlay (off in pro mode) */
+  --pk-scanline-opacity: 0;
+}
+
+/* ============== ARCADE MODE (8-bit neon, CRT scanlines) ============== */
+[data-theme="arcade"] {
+  --pk-bg-base: #050208;
+  --pk-bg-grad-1: #0a0418;
+  --pk-bg-grad-2: #1a0533;
+  --pk-bg-grad-3: #2a0a4a;
+
+  --pk-orb-1: #ff00ff;
+  --pk-orb-2: #00ffff;
+  --pk-orb-3: #ffff00;
+
+  --pk-card-bg: rgba(20, 8, 40, 0.7);
+  --pk-card-bg-strong: rgba(30, 12, 50, 0.85);
+  --pk-card-border: rgba(255, 0, 255, 0.4);
+  --pk-card-border-strong: rgba(0, 255, 255, 0.6);
+  --pk-card-shadow: 0 0 0 2px rgba(0, 255, 255, 0.3), 0 0 16px rgba(255, 0, 255, 0.4),
+                    inset 0 0 16px rgba(255, 0, 255, 0.05);
+  --pk-card-blur: blur(2px) saturate(150%);
+  --pk-card-blur-fallback: rgba(20, 8, 40, 0.95);
+
+  --pk-fg: #00ff88;
+  --pk-fg-strong: #ffffff;
+  --pk-fg-muted: rgba(0, 255, 136, 0.7);
+  --pk-fg-subtle: rgba(0, 255, 136, 0.4);
+
+  --pk-brand-grad-1: #ff00ff;
+  --pk-brand-grad-2: #00ffff;
+  --pk-brand-subtle: #ffff00;
+
+  --pk-radius-sm: 0;
+  --pk-radius: 0;
+  --pk-radius-lg: 0;
+  --pk-radius-xl: 0;
+  --pk-radius-full: 0;
+
+  --pk-border: rgba(0, 255, 255, 0.4);
+  --pk-border-strong: rgba(255, 0, 255, 0.8);
+
+  --pk-accent-pdf: #00ffff;
+  --pk-accent-images: #ff00ff;
+  --pk-accent-privacy: #00ff88;
+  --pk-accent-generators: #ffff00;
+  --pk-accent-media: #ff0066;
+  --pk-accent: var(--pk-accent-pdf);
+
+  --pk-font-head: "Press Start 2P", "VT323", monospace;
+  --pk-font-body: "JetBrains Mono", "VT323", monospace;
+  --pk-font-mono: "JetBrains Mono", "VT323", monospace;
+
+  --pk-scanline-opacity: 0.08;
+  --pk-glow: 0 0 8px currentColor, 0 0 16px currentColor;
+  --pk-glow-strong: 0 0 12px currentColor, 0 0 24px currentColor;
+}
+
+/* ============== POOKIE MODE (soft pastel cream/pink/lavender) ============== */
+[data-theme="pookie"] {
+  --pk-bg-base: #fef6f9;
+  --pk-bg-grad-1: #fde7f0;
+  --pk-bg-grad-2: #f3e8ff;
+  --pk-bg-grad-3: #fef3c7;
+
+  --pk-orb-1: #ffc7d8;
+  --pk-orb-2: #c7d8ff;
+  --pk-orb-3: #fff3c0;
+
+  --pk-card-bg: rgba(255, 255, 255, 0.85);
+  --pk-card-bg-strong: rgba(255, 255, 255, 0.95);
+  --pk-card-border: rgba(255, 199, 216, 0.6);
+  --pk-card-border-strong: rgba(255, 167, 196, 0.8);
+  --pk-card-shadow: 0 12px 32px rgba(255, 167, 196, 0.25),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  --pk-card-blur: blur(16px) saturate(120%);
+  --pk-card-blur-fallback: rgba(255, 255, 255, 0.95);
+
+  --pk-fg: #5a3a3a;
+  --pk-fg-strong: #3a2424;
+  --pk-fg-muted: rgba(90, 58, 58, 0.65);
+  --pk-fg-subtle: rgba(90, 58, 58, 0.4);
+
+  --pk-brand-grad-1: #ff9bb5;
+  --pk-brand-grad-2: #c084fc;
+  --pk-brand-subtle: #d8b4fe;
+
+  --pk-radius-sm: 12px;
+  --pk-radius: 20px;
+  --pk-radius-lg: 28px;
+  --pk-radius-xl: 36px;
+  --pk-radius-full: 9999px;
+
+  --pk-border: rgba(255, 199, 216, 0.5);
+  --pk-border-strong: rgba(255, 167, 196, 0.8);
+
+  --pk-accent-pdf: #5eb8b8;
+  --pk-accent-images: #d896d8;
+  --pk-accent-privacy: #88c8a0;
+  --pk-accent-generators: #f0c870;
+  --pk-accent-media: #e89090;
+  --pk-accent: var(--pk-accent-pdf);
+
+  --pk-font-head: "Quicksand", "Nunito", system-ui, sans-serif;
+  --pk-font-body: "Nunito", "Quicksand", system-ui, sans-serif;
+  --pk-font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --pk-scanline-opacity: 0;
+  --pk-glow: 0 4px 12px rgba(255, 167, 196, 0.3);
+  --pk-glow-strong: 0 8px 24px rgba(255, 167, 196, 0.4);
+}
