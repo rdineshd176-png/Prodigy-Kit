@@ -1,129 +1,105 @@
-# Prodigy Kit
+<div align="center">
 
-**10 days. 10 tools. Zero backend. Daily reveal series.**
+<h1>🛠️ Prodigy Kit</h1>
 
-A 10-day daily-release toolkit of in-browser utilities — PDF manipulation, image compression, EXIF scrubbing, encrypted vaults, QR codes, AI background removal, Markdown → PDF, link tracking stripping, crypto utilities, and media extraction. Everything runs in your browser, nothing is uploaded, no tracking.
+<p><strong><big>10 days. 10 tools. Zero backend. Zero sketchy ads.</big></strong></p>
 
-## Daily Reveal Workflow
+<p><big>Prodigy Kit is a daily-reveal suite of in-browser utilities for PDF manipulation, strict-size image compression, EXIF metadata scrubbing, encrypted snippets, QR codes, AI background removal, Markdown-to-PDF conversion, link tracking removal, crypto utilities, and local media extraction.</big></p>
 
-This project is structured as a **10-day daily release series**:
+<p><big>Everything runs locally in your browser. Files are not uploaded, no backend database is required, and the project includes no tracking scripts.</big></p>
 
-- **Day 1 (Oct 12, Monday):** PDF Toolkit goes live — **LIVE**
-- **Day 2 (Oct 13, Tuesday):** Image Compressor revealed — **LIVE**
-- **Day 3 (Oct 14, Wednesday):** EXIF Scrubber revealed
-- …through Day 10
+</div>
 
-### How to reveal a new day
+## 📅 The 10-Day Utility Sprint
 
-Each day's folder is **fully standalone** — own HTML, own CSS, own JS. To reveal a future day:
+Each utility is a standalone folder under `tools/`. The dashboard detects available tool folders and marks them as live.
 
-```bash
-# Copy the day's folder from _source/ to tools/ (example: Day 3)
-cp -r _source/day3-exif tools/
+| Day | Tool | What it does | Engine / Library | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| **Day 1** | **PDF Toolkit** | Merge PDFs, split page ranges, and convert images to PDF. | `pdf-lib` & `PDF.js` | ✅ **LIVE** |
+| **Day 2** | **Image Compressor** | Compress images to strict KB targets and convert formats. | `HTML5 Canvas API` | ✅ **LIVE** |
+| **Day 3** | **EXIF Scrubber** | Inspect and remove hidden GPS, device, and timestamp metadata. | `ExifReader` | ✅ **LIVE** |
+| **Day 4** | **Snippet Vault** | Encrypt sensitive text locally with AES-GCM and PBKDF2. | `Web Crypto API` | 🔒 Upcoming |
+| **Day 5** | **QR Studio** | Generate static, non-expiring QR codes. | `qrcode.js` | 🔒 Upcoming |
+| **Day 6** | **Background Remover** | Remove image backgrounds locally with WebAssembly. | `@imgly/background-removal` | 🔒 Upcoming |
+| **Day 7** | **Markdown → PDF** | Preview Markdown and export it as a formatted PDF. | `marked.js` & `html2pdf.js` | 🔒 Upcoming |
+| **Day 8** | **Link X-Ray** | Remove tracking parameters and inspect URLs. | `URL API` | 🔒 Upcoming |
+| **Day 9** | **Crypto Kit** | Encode, decode, and hash values for development and CTF work. | `CryptoJS` | 🔒 Upcoming |
+| **Day 10** | **Media Extractor** | Extract audio and trim media locally in the browser. | `FFmpeg.wasm` | 🔒 Upcoming |
 
-# Deploy to Netlify (or your static host)
-# The dashboard auto-detects the new folder and flips its card to LIVE
-```
-
-**No config edits needed.** The dashboard probes each day's folder via `fetch HEAD` on every page load. If the folder exists (200 OK), the card shows **LIVE** with a glowing border and clickable link. If 404, the card shows **🔒 LOCKED** and clicking it displays a "unlocks on its reveal day" toast.
-
-## Architecture
+## 🗂️ Project Structure
 
 ```text
-prodigy-kit/                  ← Deploy this folder to Netlify
-├── index.html                # Central Bento Dashboard
-├── credits.html              # R Dinesh + libraries + sarcastic copy
+prodigy-kit/
+├── index.html                # Central Bento dashboard
+├── credits.html              # Builder identity and library credits
 ├── README.md
-├── assets/                   # Shared dashboard assets (NOT used by day folders)
+├── assets/                   # Shared dashboard assets
 │   ├── styles/
-│   │   ├── tokens.css         # Theme tokens (pro / arcade / pookie)
-│   │   ├── base.css           # Reset, typography, aurora background
-│   │   └── shell.css          # Bento cards, glass, top bar, command palette
+│   │   ├── tokens.css        # Pro, Arcade, and Pookie theme tokens
+│   │   ├── base.css          # Reset, typography, and background
+│   │   └── shell.css         # Dashboard layout and components
 │   ├── lib/
-│   │   ├── store.js           # State manager (theme, progress, onboarding)
-│   │   └── tools.js           # Tool metadata (10 days, hrefs for probing)
-│   └── app.js                # Dashboard logic (folder probe, theme, cmdk)
-├── tools/
-│   ├── day1-pdf/             # Day 1 — LIVE
-│   │   ├── index.html        # Standalone HTML (references ./style.css + ./app.js)
-│   │   ├── style.css         # Full CSS stack + tool-specific styles
-│   │   └── app.js            # Full JS stack + tool logic
-│   └── day2-compressor/      # Day 2 — LIVE
-│       ├── index.html
-│       ├── style.css
-│       └── app.js
-└── _source/                  ← Source copies for upcoming days (NOT deployed)
-    ├── day2-compressor/      # Day 2 source copy; published version is in tools/
-    │   ├── index.html
-    │   ├── style.css
-    │   └── app.js
-    ├── day3-exif/
-    ├── day4-vault/
-    ├── day5-qr/
-    ├── day6-bgremover/
-    ├── day7-markdown/
-    ├── day8-linkxray/
-    ├── day9-cryptokit/
-    └── day10-media/
+│   │   ├── store.js          # Theme and progress state
+│   │   └── tools.js          # Tool metadata and routes
+│   └── app.js                # Dashboard logic
+└── tools/
+    ├── day1-pdf/             # Day 1 — LIVE
+    ├── day2-compressor/      # Day 2 — LIVE
+    └── day3-exif/            # Day 3 — LIVE
 ```
 
-### Why each day is fully standalone
+## 🧱 Standalone Daily Releases
 
-Each day folder's `style.css` includes the **entire** CSS stack (theme tokens + base + shell + tool-specific) and `app.js` includes the **entire** JS stack (store + theme switching + tool logic). This means:
+Each day's folder contains its own HTML, CSS, and JavaScript. A tool can therefore be tested or hosted independently without changing the other days.
 
-- ✅ Editing Day 3's CSS doesn't affect any other day
-- ✅ Each day folder works as a 100% self-contained website
-- ✅ You can deploy just one day's folder without touching the rest
-- ⚠️ Cost: theme tokens are duplicated 10× (updating a theme color means editing all 10 `style.css` files, or just the shared `assets/styles/tokens.css` for the dashboard)
-
-## Tech Stack
-
-**Pure HTML / CSS / JavaScript (ES Modules)** — no React, no TypeScript, no build step, no bundler, no `npm install`.
-
-- **HTML5** — semantic markup in `index.html` files
-- **CSS3** — hand-written design tokens (no preprocessor, no Tailwind)
-- **Vanilla JavaScript** — ES modules with dynamic `import()` for lazy-loading
-- **State management** — tiny custom pub/sub store (~80 lines, no framework)
-- **Icons** — Lucide Icons (auto-injected via `lucide.createIcons()`)
-- **Brand font** — Pacifico (script font for "Prodigy Kit" wordmark in Pro/Pookie); Press Start 2P in Arcade
-- **Libraries** — loaded as ES modules from `esm.sh` CDN at runtime
-
-## Themes
-
-Three modes switchable from the top-right (persisted in `localStorage`):
-
-- **💼 Pro Mode** (default) — Cyber-indigo dark + electric cyan accents. Inter for body, Pacifico for brand. Logo icon: `gem`.
-- **🕹️ Arcade Mode** — Pure black + CRT scanlines + neon magenta/cyan glow. Press Start 2P + JetBrains Mono. Logo icon: `trophy`.
-- **🎀 Pookie Mode** — Soft cream/pink/lavender pastel + rounded blobs. Quicksand + Nunito, Pacifico for brand. Logo icon: `sparkles`.
-
-The logo mark icon swaps dynamically based on the active theme — each theme has its own unique visual identity.
-
-## How to Run
-
-### Dashboard + Day 1 and Day 2
+To publish a future day, copy its completed folder into `tools/`:
 
 ```bash
-cd prodigy-kit
+# Example: publish Day 4 after its folder is ready
+cp -r day4-vault tools/
+```
+
+Refresh the dashboard after deployment. The new folder will be available at `/tools/day4-vault/`.
+
+## 🎨 Tri-Theme Engine
+
+The dashboard and tools support three themes, persisted with `localStorage`:
+
+- **💼 Pro Mode (default):** Cyber-indigo dark palette with electric cyan accents.
+- **🕹️ Arcade Mode:** CRT scanlines with neon magenta and cyan accents.
+- **🎀 Pookie Mode:** Soft cream, pink, and lavender pastel styling.
+
+## 🧰 Tech Stack
+
+- Pure HTML5, CSS3, and vanilla JavaScript ES modules
+- No React, TypeScript, Tailwind, bundler, or build step
+- A small custom pub/sub store for themes, progress, and notifications
+- Runtime libraries loaded as ES modules from `esm.sh` and `unpkg`
+- Static hosting with Netlify or any compatible web server
+
+## 🚀 Run Locally
+
+Because the tools use ES modules, serve the project through a local HTTP server instead of opening `index.html` directly:
+
+```bash
+git clone https://github.com/rdineshd176-png/Prodigy-Kit.git
+cd Prodigy-Kit
 python3 -m http.server 8000
-# Visit http://localhost:8000
 ```
 
-Day 1 and Day 2 are now in `tools/` and ready to test locally:
+Open <http://localhost:8000> in your browser.
 
-- Dashboard: `http://localhost:8000/`
-- Day 1 — PDF Toolkit: `http://localhost:8000/tools/day1-pdf/`
-- Day 2 — Image Compressor: `http://localhost:8000/tools/day2-compressor/`
+Available tools:
 
-### To reveal Day 3 (Oct 14)
+- Dashboard: <http://localhost:8000/>
+- Day 1 — PDF Toolkit: <http://localhost:8000/tools/day1-pdf/>
+- Day 2 — Image Compressor: <http://localhost:8000/tools/day2-compressor/>
+- Day 3 — EXIF Scrubber: <http://localhost:8000/tools/day3-exif/>
 
-```bash
-cp -r _source/day3-exif tools/
-# Refresh the dashboard — Day 3 should flip to LIVE automatically
-```
+## 🚀 Deploy to Netlify
 
-## Deploy to Netlify
-
-Drop the `prodigy-kit/` folder into Netlify. Add this `_headers` file for Day 10's ffmpeg.wasm to work (other days don't need it):
+Drop the `prodigy-kit/` folder into Netlify or connect the GitHub repository. Day 10's `ffmpeg.wasm` may require these headers in a root-level `_headers` file:
 
 ```text
 /*
@@ -131,27 +107,43 @@ Drop the `prodigy-kit/` folder into Netlify. Add this `_headers` file for Day 10
   Cross-Origin-Opener-Policy: same-origin
 ```
 
-## The 10 Days
+## 🔐 Privacy by Design
+Prodigy Kit is designed for files and text that should not be sent to an online converter:
 
-| Day | Tool | Status | Library |
-|-----|------|--------|---------|
-| 1 | PDF Toolkit | ✅ LIVE | pdf-lib |
-| 2 | Image Compressor | ✅ LIVE | Canvas API |
-| 3 | EXIF Scrubber | 🔒 in `_source/` | ExifReader |
-| 4 | Snippet Vault | 🔒 in `_source/` | Web Crypto API |
-| 5 | QR Studio | 🔒 in `_source/` | qrcode |
-| 6 | Background Remover | 🔒 in `_source/` | @imgly/background-removal |
-| 7 | Markdown → PDF | 🔒 in `_source/` | marked + html2pdf |
-| 8 | Link X-Ray | 🔒 in `_source/` | URL API |
-| 9 | Crypto Kit | 🔒 in `_source/` | CryptoJS |
-| 10 | Media Extractor | 🔒 in `_source/` | ffmpeg.wasm |
+- Files are read through browser APIs and processed in local memory.
+- The project does not require an upload endpoint or application database.
+- EXIF removal redraws images onto a clean canvas before download.
+- The dashboard stores only local preferences such as the selected theme.
+- External CDN libraries load at runtime; tool input is not sent to those libraries.
 
-## Credits
+Always review a tool's output before sharing it, especially when handling sensitive or regulated information.
 
-Built & vibe-coded by **R Dinesh** — Cyber Security Student, Chief Vibe-Coder & Occasional Bug Generator. See [`credits.html`](./credits.html) for the full library list, sarcastic "Anti-Credits", and the Zero-Trust Guarantee.
+## 🧪 Testing a Tool
+1. Start the local server from the project root.
+2. Open the dashboard and select a tool marked **LIVE**.
+3. Choose a small sample file first.
+4. Confirm the downloaded result opens correctly.
+5. Test the tool directly from its folder if you are working on an isolated release.
 
-> "Built out of pure frustration because dodging 15 fake green 'Download' buttons just to merge a college assignment should be illegal."
+The dashboard uses the presence of each tool route to determine whether a daily card can be opened. Keep each tool's `index.html`, `style.css`, and `app.js` together when moving or deploying it.
 
-## License
+## 🛠️ Adding a New Daily Tool
+1. Create a folder under `tools/` using the matching day identifier.
+2. Add the standalone HTML, CSS, and JavaScript files.
+3. Register the tool metadata and route in `assets/lib/tools.js`.
+4. Add the tool to the README sprint table and project structure.
+5. Open the dashboard and verify the card, route, and theme behavior.
+6. Test the tool through a local HTTP server before deploying.
 
-MIT — fork it, learn from it, ship it as your own.
+## 🤝 Contributions
+Bug reports, usability improvements, and accessibility fixes are welcome. Please include the affected day, browser, reproduction steps, and a small sample input when possible. Do not include private files, credentials, API keys, or personal metadata in an issue or pull request.
+## 🏆 Credits
+
+**Created and vibe-coded by:**
+
+- **R Dinesh** — Cyber Security Student · Chief Vibe-Coder · Occasional Bug Generator
+- [GitHub](https://github.com/rdineshd176-png) · [LinkedIn](https://www.linkedin.com/in/dinesh-r-cybersec/) · [Full Credits Page](./credits.html)
+
+## 📄 License
+
+MIT — fork it, learn from it, and ship it as your own.
