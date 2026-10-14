@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="pro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#150826" />
+  <title>Day 3 · EXIF Scrubber — Prodigy Kit</title>
+  <meta name="description" content="Inspect EXIF metadata and strip 100% via canvas redraw." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Pacifico&family=JetBrains+Mono:wght@400;500;600&family=Quicksand:wght@500;600;700&family=Nunito:wght@400;500;600;700&family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet" />
+
+  <!-- Standalone day styles (includes tokens + base + shell + tool-specific) -->
+  <link rel="stylesheet" href="./style.css" />
+
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+</head>
+<body>
+  <div class="pk-scanlines" aria-hidden="true"></div>
+
+  <div class="pk-root">
+    <header class="pk-topbar">
+      <div class="pk-container pk-topbar__inner">
+        <a href="../../index.html" class="pk-logo" aria-label="Prodigy Kit home">
+          <span class="pk-logo__mark"><i data-lucide="gem"></i></span>
+          <span class="pk-logo__brand">
+            <span class="pk-logo__brand-main">Prodigy Kit</span>
+          </span>
+        </a>
+        <div class="pk-topbar__actions">
+          <a href="../../index.html" class="pk-cmdk-trigger">
+            <i data-lucide="arrow-left"></i>
+            <span class="pk-cmdk-trigger__label">Dashboard</span>
+          </a>
+          <div class="pk-themeswitch" role="group" aria-label="Theme switcher">
+            <button class="pk-themeswitch__btn" data-theme="pro" aria-label="Pro Mode" aria-pressed="true" title="Pro Mode">
+              <i data-lucide="briefcase"></i>
+            </button>
+            <button class="pk-themeswitch__btn" data-theme="arcade" aria-label="Arcade Mode" aria-pressed="false" title="Arcade Mode">
+              <i data-lucide="gamepad-2"></i>
+            </button>
+            <button class="pk-themeswitch__btn" data-theme="pookie" aria-label="Pookie Mode" aria-pressed="false" title="Pookie Mode">
+              <i data-lucide="heart"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="pk-main">
+      <div class="pk-container">
+        <div class="pk-section-head">
+          <div>
+            <h1 class="pk-section-head__title">Day 3 · EXIF Scrubber</h1>
+            <p class="pk-section-head__subtitle">Inspect & strip hidden metadata</p>
+          </div>
+        </div>
+        <div id="day3-mount"></div>
+      </div>
+    </main>
+
+    <footer class="pk-footer">
+      <div class="pk-container pk-footer__inner">
+        <div class="pk-footer__brand">
+          <span>Prodigy Kit</span> · Day 3 of 10 · <span>EXIF Scrubber</span>
+        </div>
+        <div class="pk-footer__links">
+          <a href="../../index.html">← Dashboard</a>
+          <a href="../../credits.html">Credits</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <div class="pk-toast-stack" id="pk-toast-stack" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Standalone day script (includes store + theme + tool logic) -->
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
