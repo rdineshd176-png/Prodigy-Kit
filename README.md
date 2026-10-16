@@ -1,4 +1,3 @@
-````
 <div align="center">
 
 <h1>🛠️ Prodigy Kit</h1>
@@ -7,7 +6,7 @@
 
 <p><big>Prodigy Kit is a daily-reveal suite of in-browser utilities for PDF manipulation, strict-size image compression, EXIF metadata scrubbing, encrypted snippets, QR codes, AI background removal, Markdown-to-PDF conversion, link tracking removal, crypto utilities, and local media extraction.</big></p>
 
-<p><big>Everything is designed to run locally in your browser. No application backend or database is required, and the project includes no tracking scripts.</big></p>
+<p><big>The tools are designed to process user input directly in the browser without an application backend or database. The project includes no tracking scripts.</big></p>
 
 <p>
 <a href="https://prodigy-kit.netlify.app/"><strong>🌐 Live Demo</strong></a>
@@ -21,20 +20,22 @@
 
 ## 📅 The 10-Day Utility Sprint
 
-Each utility lives in its own standalone folder under `tools/`. The dashboard checks tool routes and displays available tools as LIVE while unreleased tools remain locked.
+Each utility is a standalone folder under `tools/`. The dashboard checks the availability of tool routes and displays published tools as LIVE while upcoming releases remain locked.
 
 | Day | Tool | What it does | Engine / Library | Status |
 | :--- | :--- | :--- | :--- | :--- |
 | **Day 1** | **PDF Toolkit** | Merge PDFs, split page ranges, and convert images to PDF. | `pdf-lib` & `PDF.js` | ✅ **LIVE** |
 | **Day 2** | **Image Compressor** | Compress images to strict KB targets and convert formats. | `HTML5 Canvas API` | ✅ **LIVE** |
 | **Day 3** | **EXIF Scrubber** | Inspect and remove hidden GPS, device, and timestamp metadata. | `ExifReader` & Canvas API | ✅ **LIVE** |
-| **Day 4** | **Snippet Vault** | Encrypt and share sensitive text through self-contained URLs. | `Web Crypto API` · AES-GCM | ✅ **LIVE** |
-| **Day 5** | **QR Studio** | Generate static, non-expiring QR codes. | `qrcode.js` | 🔒 Upcoming |
-| **Day 6** | **Background Remover** | Remove image backgrounds locally using browser-based AI. | `@imgly/background-removal` | 🔒 Upcoming |
+| **Day 4** | **Snippet Vault** | Encrypt and share text snippets through self-contained URLs. | `Web Crypto API` · AES-GCM | ✅ **LIVE** |
+| **Day 5** | **QR Studio** | Generate static QR codes for URLs, Wi-Fi credentials, and text; customize colors and export PNG/SVG. | `qrcode@1.5.4` | ✅ **LIVE** |
+| **Day 6** | **Background Remover** | Remove image backgrounds locally with browser-based AI. | `@imgly/background-removal` | 🔒 Upcoming |
 | **Day 7** | **Markdown → PDF** | Preview Markdown and export it as a formatted PDF. | `marked.js` & `html2pdf.js` | 🔒 Upcoming |
 | **Day 8** | **Link X-Ray** | Remove tracking parameters and inspect URLs. | `URL API` | 🔒 Upcoming |
 | **Day 9** | **Crypto Kit** | Encode, decode, and hash values for development and CTF work. | `CryptoJS` | 🔒 Upcoming |
 | **Day 10** | **Media Extractor** | Extract audio and trim supported media locally in the browser. | `FFmpeg.wasm` | 🔒 Upcoming |
+
+*Release schedule: Day 1 — October 12, 2026; Day 5 — October 16, 2026. Upcoming release dates follow the planned daily schedule.*
 
 ## 🗂️ Project Structure
 
@@ -49,14 +50,15 @@ prodigy-kit/
 │   │   ├── base.css            # Reset, typography, and background
 │   │   └── shell.css           # Dashboard layout and components
 │   ├── lib/
-│   │   ├── store.js            # Theme, progress, and UI state
+│   │   ├── store.js            # Theme and progress state
 │   │   └── tools.js            # Tool metadata and routes
-│   └── app.js                  # Dashboard logic and folder detection
+│   └── app.js                  # Dashboard logic and route detection
 ├── tools/                      # Published tools
 │   ├── day1-pdf/               # Day 1 — LIVE
 │   ├── day2-compressor/        # Day 2 — LIVE
 │   ├── day3-exif/              # Day 3 — LIVE
-│   └── day4-vault/             # Day 4 — LIVE
+│   ├── day4-vault/             # Day 4 — LIVE
+│   └── day5-qr/                # Day 5 — LIVE
 │       ├── index.html
 │       ├── style.css
 │       └── app.js
@@ -70,258 +72,230 @@ prodigy-kit/
     ├── day8-linkxray/
     ├── day9-cryptokit/
     └── day10-media/
-````
+```
 
-Deployment note: Keep `_source/` out of the public deployment when it contains unreleased tools. Only publish the dashboard, shared assets, and folders intended to be live.
+**Deployment note:** Keep `_source/` out of the public deployment if it contains unreleased tools. Publish only the dashboard, shared assets, and tool folders that are ready to go live.
 
 ## 🧱 Standalone Daily Releases
 
-Each day's folder is designed to contain its own HTML, CSS, and JavaScript. This makes it possible to test or host individual tools independently without changing the other releases.
+Each daily tool is designed to contain its own HTML, CSS, and JavaScript. This makes it possible to test or host a tool independently without changing the other days.
 
-The standalone architecture provides:
+Benefits:
 
-- Isolation: Changes to one tool are less likely to affect another.
-- Portability: Individual tools can be hosted separately.
-- No build step: No bundler or compilation is needed.
-- Independent styling: Each tool can maintain its own visual identity and theme implementation.
+- **Isolation:** Changes to one tool are less likely to affect another.
+- **Portability:** Individual tools can be hosted separately.
+- **No build pipeline:** No bundler or compilation step is needed.
+- **Independent styling:** Each tool can maintain its own UI and theme implementation.
 
-The trade-off is duplicated code. Shared design tokens and theme logic may need to be maintained across multiple standalone folders.
+The trade-off is duplicated code: updates to theme tokens or shared logic may need to be copied into multiple standalone tools.
 
 ### 🔓 Revealing a New Day
 
-To publish Day 5, copy its completed source folder into `tools/`:
+Develop a future utility in `_source/` first. To publish Day 6 when it is ready, for example, copy its folder into `tools/`:
 
+```bash
+cp -r _source/day6-bgremover tools/
 ```
-cp -r _source/day5-qr tools/
-```
 
-Deploy the updated project and refresh the dashboard.
+Deploy the updated project and refresh the dashboard. The tool should be available at its corresponding route, such as `/tools/day6-bgremover/`.
 
-The QR Studio page should become available at:
+The dashboard's route-detection logic must be configured to recognize the new tool. Verify the deployed path and card behavior instead of assuming folder presence alone guarantees a successful release.
 
-`/tools/day5-qr/`
+## ✨ Day 5 Spotlight: QR Studio
 
-The dashboard uses tool-route availability to determine which cards can be opened. Verify that the published entry point returns successfully and that the dashboard's detection logic works correctly on your hosting provider.
+**Generate static QR codes without relying on a QR redirect or tracking service.**
 
-No separate configuration edit should be necessary when the folder structure, route metadata, and detection logic are configured correctly.
-
-## 🎨 Tri-Theme Engine
-
-The dashboard and standalone tools support three visual themes.
-
-### 💼 Pro Mode
-
-Cyber-indigo dark backgrounds with electric-cyan accents. Clean, focused, and built for getting work done.
-
-### 🕹️ Arcade Mode
-
-Pure-black backgrounds, neon magenta and cyan, CRT-inspired scanlines, and retro gaming aesthetics.
-
-### 🎀 Pookie Mode
-
-Soft cream, pink, and lavender pastel styling with rounded elements and frosted-glass effects.
-
-Theme selection is designed to persist using `localStorage` where configured.
-
-The visual identity changes with the selected theme, including the brand styling, typography, colors, and logo icon.
-
-## 🔐 Day 4 Spotlight: Snippet Vault
-
-Share encrypted text without maintaining a server-side database.
-
-The Snippet Vault uses the native Web Crypto API to encrypt text directly in the browser.
+QR Studio creates QR codes directly in the browser for URLs, Wi-Fi network details, and plain text.
 
 ### Features
 
-- AES-GCM encryption: Encrypt snippets locally in the browser.
-- Optional passcode protection: Add an extra access step before decryption.
-- Self-contained URLs: Package encrypted data and decryption material into a shareable URL.
-- Zero application backend: No custom server or database is required to store snippets.
-- Three visual themes: Switch between Pro, Arcade, and Pookie modes.
+- **Three content types:** URLs, Wi-Fi credentials, and plain text.
+- **Custom colors:** Choose foreground and background colors.
+- **Preset palettes:** Classic, Dark Mode, Forest, Sunset, and CMYK Print.
+- **Error correction:** Select L, M, Q, or H to balance density and recovery from damage.
+- **Adjustable preview size:** Choose a preview size from 128px to 1024px.
+- **PNG export:** Download a 1024 × 1024 PNG.
+- **SVG export:** Download a scalable vector QR code.
+- **Tri-theme interface:** Pro, Arcade, and Pookie modes.
+- **Browser-side generation:** QR content is encoded by the client-side `qrcode` library.
 
 ### How It Works
 
-1. Enter the text you want to share.
-2. Encrypt it locally using the browser's cryptographic APIs.
-3. Package the encrypted payload and the required decryption information into the URL fragment.
-4. Send the generated link to the recipient.
-5. The recipient opens the link and decrypts the contents in their browser.
+1. Select URL, Wi-Fi, or Text.
+2. Enter the content to encode.
+3. Customize colors, error correction, and preview size.
+4. Preview the generated QR code.
+5. Download it as PNG or SVG.
 
-URL fragments—the part of a URL after `#`—are not included in ordinary HTTP requests. This helps keep the fragment's contents out of requests sent to the hosting server.
+The QR code is static: the content is encoded directly into the QR matrix rather than routed through a dedicated tracking redirect. A QR code itself does not expire, but a website or resource encoded inside it can still be changed, removed, or become unavailable.
 
-Security reminder: Anyone who obtains a URL containing the decryption key may be able to decrypt the snippet. A PIN provides meaningful additional protection only when it is correctly integrated into the encryption process, such as through a suitable password-based key-derivation mechanism. Browser history, copied links, and recipient access also matter. Review the implementation before using the tool for highly sensitive credentials.
+**Wi-Fi privacy note:** A Wi-Fi QR code contains the network information you entered, including the password for password-protected networks. Anyone who scans or decodes that code may be able to retrieve those details. Share Wi-Fi QR codes only with people you trust.
+
+## 🎨 Tri-Theme Engine
+
+The dashboard and standalone tools support three visual themes:
+
+- **💼 Pro Mode (default):** Cyber-indigo dark styling with electric cyan accents.
+- **🕹️ Arcade Mode:** CRT-inspired scanlines with neon magenta and cyan accents.
+- **🎀 Pookie Mode:** Soft cream, pink, and lavender pastel styling.
+
+Theme selection is persisted through `localStorage` where configured. The theme switcher also updates the visual identity, including the logo icon and color palette.
 
 ## 🧰 Tech Stack
 
 ### Core Technologies
 
-- HTML5 for semantic structure.
-- CSS3 for responsive styling, custom properties, and design tokens.
-- Vanilla JavaScript with native ES modules.
-- Browser APIs for image processing, encryption, and URL handling.
+- HTML5, CSS3, and vanilla JavaScript ES modules.
+- Native browser APIs for image processing, encryption, and URL handling.
+- A small custom pub/sub store for application state.
 - `localStorage` for supported local preferences.
-- Lucide Icons for interface iconography.
-- A lightweight custom pub/sub store for application state.
-- Static hosting through Netlify or another compatible provider.
+- Lucide icons for interface iconography.
+- Static hosting through Netlify or another compatible web server.
 
 ### External Libraries
 
-| Library                     | Purpose                                     |
-| --------------------------- | ------------------------------------------- |
-| `pdf-lib`                   | PDF manipulation                            |
-| `PDF.js`                    | PDF rendering and preview, where configured |
-| `ExifReader`                | Image metadata inspection                   |
-| `marked.js`                 | Markdown parsing                            |
-| `html2pdf.js`               | PDF generation                              |
-| `qrcode.js`                 | QR code generation                          |
-| `@imgly/background-removal` | AI-assisted background removal              |
-| `CryptoJS`                  | Cryptographic utilities                     |
-| `FFmpeg.wasm`               | Browser-based media processing              |
+| Library | Purpose |
+| :--- | :--- |
+| `pdf-lib` | PDF manipulation |
+| `PDF.js` | PDF rendering and previews, where configured |
+| `ExifReader` | Image metadata inspection |
+| `qrcode@1.5.4` | QR code generation in Day 5 |
+| `marked.js` | Markdown parsing |
+| `html2pdf.js` | PDF generation |
+| `@imgly/background-removal` | Browser-based background removal |
+| `CryptoJS` | Cryptographic utilities |
+| `FFmpeg.wasm` | Browser-based media processing |
 
-Libraries are loaded at runtime from configured CDNs. Refer to the relevant source files to verify the versions and exact dependencies used by each tool.
+Libraries are loaded from configured CDNs where applicable. Check individual tool source files for exact versions and imports.
 
 ### What This Project Doesn't Need
 
 - React
 - TypeScript
 - Tailwind CSS
-- A Node.js backend
-- A database
-- A bundler
-- A build pipeline
+- A custom application backend
+- An application database
+- A bundler or build pipeline
 
-Just HTML, CSS, JavaScript, browser APIs, and a healthy willingness to debug things that worked five minutes ago.
+Just HTML, CSS, JavaScript, browser APIs, and the occasional debugging session.
 
 ## 🚀 Run Locally
 
-Because the tools use ES modules, serve the project through a local HTTP server instead of opening `index.html` directly.
+Because the tools use ES modules, run a local HTTP server instead of opening `index.html` directly.
 
 ### 1. Clone the Repository
 
-```
+```bash
 git clone https://github.com/rdineshd176-png/Prodigy-Kit.git
 cd Prodigy-Kit
 ```
 
-### 2. Start the Local Server
+### 2. Start the Server
 
-With Python 3 installed:
-
-```
+```bash
 python3 -m http.server 8000
 ```
 
-On Windows, this also works when Python is available through the `python` command:
-
-```
-python -m http.server 8000
-```
+On Windows, `python -m http.server 8000` may be the correct command depending on your Python installation.
 
 ### 3. Open the Dashboard
 
-Visit:
+Visit <http://localhost:8000>.
 
 ### Available Tools
 
-- Dashboard:
-- Day 1 — PDF Toolkit:
-- Day 2 — Image Compressor:
-- Day 3 — EXIF Scrubber:
-- Day 4 — Snippet Vault:
+- **Dashboard:** <http://localhost:8000/>
+- **Day 1 — PDF Toolkit:** <http://localhost:8000/tools/day1-pdf/>
+- **Day 2 — Image Compressor:** <http://localhost:8000/tools/day2-compressor/>
+- **Day 3 — EXIF Scrubber:** <http://localhost:8000/tools/day3-exif/>
+- **Day 4 — Snippet Vault:** <http://localhost:8000/tools/day4-vault/>
+- **Day 5 — QR Studio:** <http://localhost:8000/tools/day5-qr/>
 
 ## 🚀 Deploy to Netlify
 
-Deploy the project root containing `index.html`, `assets/`, and the published `tools/` folders.
-
-You can connect the GitHub repository to Netlify or deploy the prepared project directory directly.
+Deploy the project root containing `index.html`, `assets/`, and the published `tools/` folders. You can connect the GitHub repository or deploy the prepared project directory.
 
 ### Before Deploying
 
-1. Confirm that the dashboard loads correctly.
-2. Test each published utility independently.
-3. Verify that CDN imports work on the deployed domain.
-4. Keep unreleased source folders out of the public deployment.
+1. Confirm the dashboard and each published tool load correctly.
+2. Verify that CDN imports work on the deployed domain.
+3. Keep unreleased source folders out of the public deployment.
+4. Test responsive layouts and theme switching.
 5. Check the browser console for JavaScript errors.
-6. Test theme switching and persistence.
-7. Review sensitive operations, especially encryption and file handling.
+6. Test each export with small sample inputs.
 
 ### Cross-Origin Isolation for FFmpeg.wasm
 
-Some FFmpeg.wasm configurations require cross-origin isolation. Depending on the selected version and processing mode, a root-level `_headers` file may need the following configuration:
+Some FFmpeg.wasm configurations require cross-origin isolation. If the selected version and processing mode need it, a root-level `_headers` file may include:
 
-```
+```text
 /*
   Cross-Origin-Embedder-Policy: require-corp
   Cross-Origin-Opener-Policy: same-origin
 ```
 
-These headers are not required by every utility. Applying them across the entire site may affect third-party resource loading, so test all CDN dependencies before enabling them.
+These headers are not required by every utility. They can affect third-party resource loading, so test all external dependencies before applying them site-wide.
 
 ## 🛡️ Privacy by Design
 
-Prodigy Kit is built around the idea that everyday files and text should not automatically need to visit an online converter.
+Prodigy Kit is designed for everyday file and text utilities that should not automatically require uploading user input to an online converter.
 
-The project is designed to:
+- Supported files and inputs are intended to be processed through browser APIs.
+- The tools do not require a custom upload endpoint or application database.
+- The EXIF Scrubber is designed to remove metadata by redrawing supported images onto a clean canvas.
+- The Snippet Vault encrypts and decrypts text in the browser.
+- QR Studio generates QR codes locally using its client-side library.
+- The dashboard stores supported preferences, such as the selected theme, locally.
 
-- Process supported files directly through browser APIs.
-- Avoid requiring a custom upload endpoint or application database.
-- Remove image metadata by redrawing supported images onto a clean canvas.
-- Store interface preferences, such as the selected theme, locally.
-- Perform snippet encryption and decryption in the browser.
-- Avoid including tracking scripts in the project.
+External libraries, fonts, and icons may still load from CDNs at runtime, so the site does make network requests. The design avoids sending tool input to a QR-generation service, but every tool should be reviewed independently before handling sensitive information.
 
-External libraries may still be downloaded from CDNs, and some tools may load models or other resources at runtime. This means the application can make network requests even when user files are processed locally.
-
-Local processing is not a substitute for a security review. Always inspect a tool's implementation and output before using it to handle sensitive or regulated information.
+Always inspect the result before sharing it. In particular, treat generated QR codes containing Wi-Fi passwords and shared vault links as sensitive.
 
 ## 🧪 Testing a Tool
 
 1. Start the local server from the project root.
-2. Open the dashboard.
-3. Select a utility marked LIVE.
-4. Begin with a small, non-sensitive sample file or text.
-5. Confirm that the operation completes without browser errors.
-6. Open the downloaded result and verify its contents.
-7. Test the tool directly through its own URL.
-8. Check responsive layouts and all three themes.
+2. Open the dashboard and select a tool marked **LIVE**.
+3. Begin with a small, non-sensitive sample input.
+4. Confirm the operation completes without browser errors.
+5. Open the downloaded result and verify its contents.
+6. Test the tool directly through its own URL.
+7. Check responsive layouts and all three themes.
 
-For the Snippet Vault, additionally verify encryption, decryption, malformed links, optional passcode handling, and the behavior of shared URLs.
+For QR Studio, test URL, Wi-Fi, and text inputs, each color preset, error-correction levels, and both PNG and SVG exports. Scan the downloaded QR codes with a device before sharing or printing them.
 
-The dashboard and each published utility should be tested independently before a new daily release.
+For the Snippet Vault, test encryption, decryption, malformed links, and passcode handling.
 
 ## 🛠️ Adding a New Daily Tool
 
-1. Create the tool folder in `_source/` while it is under development.
+1. Create its source folder under `_source/` while it is in development.
 2. Add the standalone HTML, CSS, and JavaScript files.
 3. Implement the interface and tool-specific functionality.
 4. Register the tool metadata and route in `assets/lib/tools.js` if required.
-5. Test the tool through a local HTTP server.
-6. Verify the card, route detection, responsiveness, and theme behavior.
+5. Test it through a local HTTP server.
+6. Verify route detection, responsiveness, exports, and theme behavior.
 7. Copy the completed folder into `tools/` when it is ready for release.
-8. Update the README sprint table and project structure.
-9. Deploy the updated project and verify the live page.
+8. Update this README's sprint table and project structure.
+9. Deploy the project and verify the live page.
 
-Keep the tool's `index.html`, `style.css`, and `app.js` together when moving or deploying it.
+Keep each tool's `index.html`, `style.css`, and `app.js` together when moving or deploying it.
 
 ## 🤝 Contributions
 
 Bug reports, usability improvements, accessibility fixes, and useful feature suggestions are welcome.
 
-When reporting an issue, include the affected day, browser, reproduction steps, and a small sample input when possible.
-
-Please do not publish private files, passwords, API keys, sensitive snippets, or personal metadata in issues or pull requests.
+When reporting an issue, include the affected day, browser, reproduction steps, and a small sample input when possible. Do not publish private files, passwords, API keys, Wi-Fi credentials, or personal metadata in issues or pull requests.
 
 ## 🏆 Credits
 
-Created and vibe-coded by:
+**Created and vibe-coded by:**
 
-\- R Dinesh — Cyber Security Student · Chief Vibe-Coder · Occasional Bug Generator
+- **R Dinesh** — Cyber Security Student · Chief Vibe-Coder · Occasional Bug Generator
 
 Find me here:
 
 - [GitHub](https://github.com/rdineshd176-png)
 - [LinkedIn](https://www.linkedin.com/in/dinesh-r-cybersec/)
-- Full Credits Page
+- [Full Credits Page](./credits.html)
 
 > Built out of pure frustration because dodging 15 fake green "Download" buttons just to merge a college assignment should be illegal.
 
@@ -331,5 +305,14 @@ MIT — fork it, learn from it, modify it, and ship your own version.
 
 Check the licenses of third-party libraries before redistributing them.
 
-```
-```
+---
+
+<div align="center">
+
+<h3>Don't consume. Construct. 🛠️</h3>
+
+<p><strong>Consistency &gt; Motivation. Always.</strong></p>
+
+<sub>Built one day at a time. Debugged one headache at a time.</sub>
+
+</div>
