@@ -53,28 +53,17 @@ prodigy-kit/
 │   │   ├── store.js            # Theme and progress state
 │   │   └── tools.js            # Tool metadata and routes
 │   └── app.js                  # Dashboard logic and route detection
-├── tools/                      # Published tools
-│   ├── day1-pdf/               # Day 1 — LIVE
-│   ├── day2-compressor/        # Day 2 — LIVE
-│   ├── day3-exif/              # Day 3 — LIVE
-│   ├── day4-vault/             # Day 4 — LIVE
-│   └── day5-qr/                # Day 5 — LIVE
-│       ├── index.html
-│       ├── style.css
-│       └── app.js
-└── _source/                    # Source copies and upcoming releases
-       ├── day2-compressor/
-       ├── day3-exif/
-       ├── day4-vault/
-       ├── day5-qr/
-       ├── day6-bgremover/
-       ├── day7-markdown/
-       ├── day8-linkxray/
-       ├── day9-cryptokit/
-       └── day10-media/
+└── tools/                      # Published tools
+    ├── day1-pdf/               # Day 1 — LIVE
+    ├── day2-compressor/        # Day 2 — LIVE
+    ├── day3-exif/              # Day 3 — LIVE
+    ├── day4-vault/             # Day 4 — LIVE
+    └── day5-qr/                # Day 5 — LIVE
+        ├── index.html
+        ├── style.css
+        └── app.js
 ```
 
-**Deployment note:** Keep `_source/` out of the public deployment if it contains unreleased tools. Publish only the dashboard, shared assets, and tool folders that are ready to go live.
 
 ## 🧱 Standalone Daily Releases
 
@@ -88,18 +77,6 @@ Benefits:
 - **Independent styling:** Each tool can maintain its own UI and theme implementation.
 
 The trade-off is duplicated code: updates to theme tokens or shared logic may need to be copied into multiple standalone tools.
-
-### 🔓 Revealing a New Day
-
-Develop a future utility in `_source/` first. To publish Day 6 when it is ready, for example, copy its folder into `tools/`:
-
-```bash
-cp -r _source/day6-bgremover tools/
-```
-
-Deploy the updated project and refresh the dashboard. The tool should be available at its corresponding route, such as `/tools/day6-bgremover/`.
-
-The dashboard's route-detection logic must be configured to recognize the new tool. Verify the deployed path and card behavior instead of assuming folder presence alone guarantees a successful release.
 
 ## ✨ Day 5 Spotlight: QR Studio
 
@@ -250,7 +227,7 @@ Deploy the project root containing `index.html`, `assets/`, and the published `t
 
 1. Confirm the dashboard and each published tool load correctly.
 2. Verify that CDN imports work on the deployed domain.
-3. Keep unreleased source folders out of the public deployment.
+3. Deploy only tools intended for public release.
 4. Test responsive layouts and theme switching.
 5. Check the browser console for JavaScript errors.
 6. Test each export with small sample inputs.
@@ -298,20 +275,6 @@ For QR Studio, test URL, Wi-Fi, and text inputs, each color preset, error-correc
 For the Snippet Vault, test encryption, decryption, malformed links, and passcode handling.
 
 For the Background Remover, test file-picker and drag-and-drop uploads, JPG/PNG/WEBP samples, transparent and each solid/custom background option, and the downloaded PNG. Also check first-run model loading, repeat use after the model is cached, and the browser console for errors.
-
-## 🛠️ Adding a New Daily Tool
-
-1. Create its source folder under `_source/` while it is in development.
-2. Add the standalone HTML, CSS, and JavaScript files.
-3. Implement the interface and tool-specific functionality.
-4. Register the tool metadata and route in `assets/lib/tools.js` if required.
-5. Test it through a local HTTP server.
-6. Verify route detection, responsiveness, exports, and theme behavior.
-7. Copy the completed folder into `tools/` when it is ready for release.
-8. Update this README's sprint table and project structure.
-9. Deploy the project and verify the live page.
-
-Keep each tool's `index.html`, `style.css`, and `app.js` together when moving or deploying it.
 
 ## 🤝 Contributions
 
