@@ -29,7 +29,7 @@ Each utility is a standalone folder under `tools/`. The dashboard checks the ava
 | **Day 3** | **EXIF Scrubber** | Inspect and remove hidden GPS, device, and timestamp metadata. | `ExifReader` & Canvas API | ✅ **LIVE** |
 | **Day 4** | **Snippet Vault** | Encrypt and share text snippets through self-contained URLs. | `Web Crypto API` · AES-GCM | ✅ **LIVE** |
 | **Day 5** | **QR Studio** | Generate static QR codes for URLs, Wi-Fi credentials, and text; customize colors and export PNG/SVG. | `qrcode@1.5.4` | ✅ **LIVE** |
-| **Day 6** | **Background Remover** | Remove image backgrounds locally with browser-based AI. | `@imgly/background-removal` | 🔒 Upcoming |
+| **Day 6** | **Background Remover** | Cut out image backgrounds with browser-based AI, choose transparent or solid/custom fills, and export PNGs. | `@imgly/background-removal` v1.7.0 | 🔒 Upcoming |
 | **Day 7** | **Markdown → PDF** | Preview Markdown and export it as a formatted PDF. | `marked.js` & `html2pdf.js` | 🔒 Upcoming |
 | **Day 8** | **Link X-Ray** | Remove tracking parameters and inspect URLs. | `URL API` | 🔒 Upcoming |
 | **Day 9** | **Crypto Kit** | Encode, decode, and hash values for development and CTF work. | `CryptoJS` | 🔒 Upcoming |
@@ -63,15 +63,15 @@ prodigy-kit/
 │       ├── style.css
 │       └── app.js
 └── _source/                    # Source copies and upcoming releases
-    ├── day2-compressor/
-    ├── day3-exif/
-    ├── day4-vault/
-    ├── day5-qr/
-    ├── day6-bgremover/
-    ├── day7-markdown/
-    ├── day8-linkxray/
-    ├── day9-cryptokit/
-    └── day10-media/
+       ├── day2-compressor/
+       ├── day3-exif/
+       ├── day4-vault/
+       ├── day5-qr/
+       ├── day6-bgremover/
+       ├── day7-markdown/
+       ├── day8-linkxray/
+       ├── day9-cryptokit/
+       └── day10-media/
 ```
 
 **Deployment note:** Keep `_source/` out of the public deployment if it contains unreleased tools. Publish only the dashboard, shared assets, and tool folders that are ready to go live.
@@ -131,6 +131,37 @@ The QR code is static: the content is encoded directly into the QR matrix rather
 
 **Wi-Fi privacy note:** A Wi-Fi QR code contains the network information you entered, including the password for password-protected networks. Anyone who scans or decodes that code may be able to retrieve those details. Share Wi-Fi QR codes only with people you trust.
 
+## ✂️ Day 6 Spotlight: Background Remover
+
+**Cut out a person or object from an image, then keep the background transparent or replace it with a clean solid color.**
+
+Day 6 uses IMG.LY's browser-based background-removal model through WebAssembly. The original image and generated cutout are shown side by side, so you can inspect the result before exporting it.
+
+### Features
+
+- **Image upload:** Choose a file or drag and drop it into the upload area. The interface is designed for JPG, PNG, and WEBP images.
+- **AI background removal:** Automatically separates the main foreground subject from its background in the browser.
+- **Original and cutout preview:** Compare the source image with the transparent cutout before downloading.
+- **Background options:** Keep transparency, use solid white, passport blue, or red, or choose a custom color.
+- **PNG export:** Download a PNG named `<original-name>-cutout.png`. Transparent output is preserved when the transparent option is selected.
+- **Progress feedback:** Shows model-download and processing progress while the cutout is being generated.
+- **Three themes:** Supports Pro, Arcade, and Pookie modes.
+- **No watermark or usage credits:** The tool does not add a watermark or require an account or credits.
+
+### How It Works
+
+1. Select an image or drag it into the drop area.
+2. Wait for the AI model to load and process the image. Progress appears in the result panel.
+3. Review the original and cutout previews.
+4. Choose Transparent, Solid white, Passport blue, Red, or Custom and set a color if needed.
+5. Select **Download PNG** to save the cutout.
+
+### Privacy and First-Run Notes
+
+The image-removal inference runs in your browser; the tool does not upload the selected image to a Prodigy Kit application backend. On first use, the browser downloads an approximately **30 MB WebAssembly AI model** and the required web resources. The model is cached by the browser, so later use can be faster. This initial model/resource download means an internet connection is needed for the first load, and normal external CDN requests may still occur.
+
+Solid-color backgrounds can be useful for ID-style photos, product images, profile pictures, and other graphics. Check the cutout carefully around hair, fine edges, and transparent objects before using the exported image.
+
 ## 🎨 Tri-Theme Engine
 
 The dashboard and standalone tools support three visual themes:
@@ -162,7 +193,7 @@ Theme selection is persisted through `localStorage` where configured. The theme 
 | `qrcode@1.5.4` | QR code generation in Day 5 |
 | `marked.js` | Markdown parsing |
 | `html2pdf.js` | PDF generation |
-| `@imgly/background-removal` | Browser-based background removal |
+| `@imgly/background-removal` v1.7.0 | Browser-based AI background removal in Day 6 |
 | `CryptoJS` | Cryptographic utilities |
 | `FFmpeg.wasm` | Browser-based media processing |
 
@@ -200,16 +231,16 @@ On Windows, `python -m http.server 8000` may be the correct command depending on
 
 ### 3. Open the Dashboard
 
-Visit <http://localhost:8000>.
+Visit [http://localhost:8000](http://localhost:8000).
 
 ### Available Tools
 
-- **Dashboard:** <http://localhost:8000/>
-- **Day 1 — PDF Toolkit:** <http://localhost:8000/tools/day1-pdf/>
-- **Day 2 — Image Compressor:** <http://localhost:8000/tools/day2-compressor/>
-- **Day 3 — EXIF Scrubber:** <http://localhost:8000/tools/day3-exif/>
-- **Day 4 — Snippet Vault:** <http://localhost:8000/tools/day4-vault/>
-- **Day 5 — QR Studio:** <http://localhost:8000/tools/day5-qr/>
+- **Dashboard:** [http://localhost:8000/](http://localhost:8000/)
+- **Day 1 — PDF Toolkit:** [http://localhost:8000/tools/day1-pdf/](http://localhost:8000/tools/day1-pdf/)
+- **Day 2 — Image Compressor:** [http://localhost:8000/tools/day2-compressor/](http://localhost:8000/tools/day2-compressor/)
+- **Day 3 — EXIF Scrubber:** [http://localhost:8000/tools/day3-exif/](http://localhost:8000/tools/day3-exif/)
+- **Day 4 — Snippet Vault:** [http://localhost:8000/tools/day4-vault/](http://localhost:8000/tools/day4-vault/)
+- **Day 5 — QR Studio:** [http://localhost:8000/tools/day5-qr/](http://localhost:8000/tools/day5-qr/)
 
 ## 🚀 Deploy to Netlify
 
@@ -230,8 +261,8 @@ Some FFmpeg.wasm configurations require cross-origin isolation. If the selected 
 
 ```text
 /*
-  Cross-Origin-Embedder-Policy: require-corp
-  Cross-Origin-Opener-Policy: same-origin
+     Cross-Origin-Embedder-Policy: require-corp
+     Cross-Origin-Opener-Policy: same-origin
 ```
 
 These headers are not required by every utility. They can affect third-party resource loading, so test all external dependencies before applying them site-wide.
@@ -245,6 +276,7 @@ Prodigy Kit is designed for everyday file and text utilities that should not aut
 - The EXIF Scrubber is designed to remove metadata by redrawing supported images onto a clean canvas.
 - The Snippet Vault encrypts and decrypts text in the browser.
 - QR Studio generates QR codes locally using its client-side library.
+- The Background Remover runs its image inference in the browser; its AI model and required web resources are downloaded on first use.
 - The dashboard stores supported preferences, such as the selected theme, locally.
 
 External libraries, fonts, and icons may still load from CDNs at runtime, so the site does make network requests. The design avoids sending tool input to a QR-generation service, but every tool should be reviewed independently before handling sensitive information.
@@ -264,6 +296,8 @@ Always inspect the result before sharing it. In particular, treat generated QR c
 For QR Studio, test URL, Wi-Fi, and text inputs, each color preset, error-correction levels, and both PNG and SVG exports. Scan the downloaded QR codes with a device before sharing or printing them.
 
 For the Snippet Vault, test encryption, decryption, malformed links, and passcode handling.
+
+For the Background Remover, test file-picker and drag-and-drop uploads, JPG/PNG/WEBP samples, transparent and each solid/custom background option, and the downloaded PNG. Also check first-run model loading, repeat use after the model is cached, and the browser console for errors.
 
 ## 🛠️ Adding a New Daily Tool
 
