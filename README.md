@@ -59,9 +59,11 @@ prodigy-kit/
     ├── day3-exif/              # Day 3 — LIVE
     ├── day4-vault/             # Day 4 — LIVE
     └── day5-qr/                # Day 5 — LIVE
+    └── dday6-bgremover/        # Day 6 - LIVE
         ├── index.html
         ├── style.css
         └── app.js
+   
 ```
 
 
