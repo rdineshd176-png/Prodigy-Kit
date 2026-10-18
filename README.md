@@ -20,7 +20,7 @@
 
 ## 📅 The 10-Day Utility Sprint
 
-Each utility is a standalone folder under `tools/`. The dashboard checks tool routes and displays published tools as LIVE while upcoming releases remain locked. Day 6, Background Remover, is now live; Days 7–10 remain locked.
+Each utility is a standalone folder under `tools/`. The dashboard checks tool routes and displays published tools as LIVE while upcoming releases remain locked. Day 7, Markdown → PDF, is now live; Days 8–10 remain locked.
 
 | Day | Tool | What it does | Engine / Library | Status |
 | :--- | :--- | :--- | :--- | :--- |
@@ -30,12 +30,12 @@ Each utility is a standalone folder under `tools/`. The dashboard checks tool ro
 | **Day 4** | **Snippet Vault** | Encrypt and share text snippets through self-contained URLs. | `Web Crypto API` · AES-GCM | ✅ **LIVE** |
 | **Day 5** | **QR Studio** | Generate static QR codes for URLs, Wi-Fi credentials, and text; customize colors and export PNG/SVG. | `qrcode@1.5.4` | ✅ **LIVE** |
 | **Day 6** | **Background Remover** | Cut out image backgrounds with browser-based AI, choose transparent or solid/custom fills, and export PNGs. | `@imgly/background-removal` v1.7.0 | ✅ **LIVE** |
-| **Day 7** | **Markdown → PDF** | Preview Markdown and export it as a formatted PDF. | `marked.js` & `html2pdf.js` | 🔒 Upcoming |
+| **Day 7** | **Markdown → PDF** | Edit Markdown with a live A4 preview, copy standalone HTML, and export a formatted PDF. | `marked@18.1.0` & `html2pdf.js@0.14.0` | ✅ **LIVE** |
 | **Day 8** | **Link X-Ray** | Remove tracking parameters and inspect URLs. | `URL API` | 🔒 Upcoming |
 | **Day 9** | **Crypto Kit** | Encode, decode, and hash values for development and CTF work. | `CryptoJS` | 🔒 Upcoming |
 | **Day 10** | **Media Extractor** | Extract audio and trim supported media locally in the browser. | `FFmpeg.wasm` | 🔒 Upcoming |
 
-*Release schedule: Day 1 — October 12, 2026; Day 5 — October 16, 2026; Day 6 — October 17, 2026. Days 7–10 remain locked until their releases.*
+*Release schedule: Day 1 — October 12, 2026; Day 5 — October 16, 2026; Day 6 — October 17, 2026; Day 7 — October 18, 2026. Days 8–10 remain locked until their releases.*
 
 ## 🗂️ Project Structure
 
@@ -62,7 +62,11 @@ prodigy-kit/
     │   ├── index.html
     │   ├── style.css
     │   └── app.js
-    └── day6-bgremover/         # Day 6 — LIVE
+    ├── day6-bgremover/         # Day 6 — LIVE
+    │   ├── index.html
+    │   ├── style.css
+    │   └── app.js
+    └── day7-markdown/           # Day 7 — LIVE
         ├── index.html
         ├── style.css
         └── app.js
@@ -81,6 +85,37 @@ Benefits:
 - **Independent styling:** Each tool can maintain its own UI and theme implementation.
 
 The trade-off is duplicated code: updates to theme tokens or shared logic may need to be copied into multiple standalone tools.
+
+## 📝 Day 7 Spotlight: Markdown → PDF
+
+**Turn Markdown into a clean, formatted PDF with a live preview, directly in your browser.**
+
+Day 7 gives you a split-screen editor: write Markdown on the left and review its rendered A4-style document preview on the right. It uses `marked` to render Markdown and `html2pdf.js` to generate a downloadable PDF. The tool is designed to work without a Prodigy Kit application backend.
+
+### Features
+
+- **Live split-screen preview:** See the rendered document update as you type.
+- **GitHub-friendly Markdown:** Supports GitHub-flavored Markdown features provided by `marked`, including tables, fenced code blocks, lists, links, headings, and blockquotes.
+- **README style:** Uses readable document styling with wrapped long content, formatted tables, code blocks, and headings.
+- **Character count:** Displays the current Markdown character count.
+- **Sample document:** Load a sample Markdown document to explore the editor and preview.
+- **Clear editor:** Clear the current content before starting a new document.
+- **Copy HTML:** Copy a standalone HTML document with the selected preview CSS to the clipboard.
+- **PDF export:** Download the rendered content as a portrait A4 PDF, with page-break handling for elements such as tables, code blocks, quotes, and headings.
+- **Three themes:** Switch between Pro, Arcade, and Pookie modes for the tool interface.
+
+### How It Works
+
+1. Edit or paste Markdown into the left-hand editor.
+2. Review the live rendered preview on the right.
+3. Use **Sample** to restore the example document or **Clear** to empty the editor.
+4. Select **Copy HTML** to copy the rendered document and its styling, or choose **Download PDF** to export it.
+
+### Privacy and Resource Notes
+
+Markdown rendering and PDF generation run in the browser; the tool does not send the document to a Prodigy Kit application backend. The page imports `marked@18.1.0` and `html2pdf.js@0.14.0` from `esm.sh` and loads fonts and Lucide icons from external CDNs, so an internet connection is needed to fetch these resources when they are not already cached. The Markdown text is not automatically uploaded to a Prodigy Kit server.
+
+Review the preview and the downloaded PDF before sharing, especially when your document contains wide tables, long code lines, or content that spans several pages.
 
 ## ✂️ Day 6 Spotlight: Background Remover
 
@@ -172,9 +207,9 @@ Theme selection is persisted through `localStorage` where configured. The theme 
 | `PDF.js` | PDF rendering and previews, where configured |
 | `ExifReader` | Image metadata inspection |
 | `qrcode@1.5.4` | QR code generation in Day 5 |
-| `marked.js` | Markdown parsing |
-| `html2pdf.js` | PDF generation |
 | `@imgly/background-removal` v1.7.0 | Browser-based AI background removal in Day 6 |
+| `marked@18.1.0` | Markdown parsing and GitHub-flavored Markdown rendering in Day 7 |
+| `html2pdf.js@0.14.0` | Browser-side PDF generation in Day 7 |
 | `CryptoJS` | Cryptographic utilities |
 | `FFmpeg.wasm` | Browser-based media processing |
 
@@ -223,6 +258,7 @@ Visit [http://localhost:8000](http://localhost:8000).
 - **Day 4 — Snippet Vault:** [http://localhost:8000/tools/day4-vault/](http://localhost:8000/tools/day4-vault/)
 - **Day 5 — QR Studio:** [http://localhost:8000/tools/day5-qr/](http://localhost:8000/tools/day5-qr/)
 - **Day 6 — Background Remover:** [http://localhost:8000/tools/day6-bgremover/](http://localhost:8000/tools/day6-bgremover/)
+- **Day 7 — Markdown → PDF:** [http://localhost:8000/tools/day7-markdown/](http://localhost:8000/tools/day7-markdown/)
 
 ## 🚀 Deploy to Netlify
 
@@ -280,6 +316,8 @@ For QR Studio, test URL, Wi-Fi, and text inputs, each color preset, error-correc
 For the Snippet Vault, test encryption, decryption, malformed links, and passcode handling.
 
 For the Background Remover, test file-picker and drag-and-drop uploads, JPG/PNG/WEBP samples, transparent and each solid/custom background option, and the downloaded PNG. Also check first-run model loading, repeat use after the model is cached, and the browser console for errors.
+
+For Markdown → PDF, test live preview updates, headings, lists, tables, links, quotes, and fenced code blocks. Verify **Copy HTML**, **Clear**, **Sample**, and PDF export, including multi-page documents and long lines or wide tables. Review the generated PDF for clipping and page-break issues.
 
 ## 🤝 Contributions
 
