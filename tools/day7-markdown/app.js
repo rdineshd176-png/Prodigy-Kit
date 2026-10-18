@@ -186,12 +186,60 @@ Type your own content here and **Download PDF** when ready.`;
 
 // ---------------------------------------------------------------------------
 // BUG FIX: All CSS selectors now scoped to `.md-content`
-// Previously: `body{...}` never applied because content lives in a <div>,
-// not a <body>. Also generic `h1{...}` selectors leaked globally and could
-// override page styles. Now everything is prefixed with `.md-content`.
+// PLUS:
+//  - word-wrap/overflow-wrap on everything (long URLs, library names wrap)
+//  - table-layout: fixed so 5-col tables render with proper column widths
+//  - white-space: pre-wrap on code so long lines wrap (no right-edge cutoff)
+//  - break-inside: avoid on tables/pre/blockquote (no awkward page splits)
+//  - Legacy HTML honored: <div align="center">, <big>, <center>
+//  - 4th preset "README" designed for GitHub README rendering (now default)
 // ---------------------------------------------------------------------------
 
 const STYLES = {
+  readme: {
+    label: "README",
+    css: `
+.md-content {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #1f2328;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 40px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+/* Honor legacy HTML align attribute */
+.md-content [align="center"] { text-align: center; }
+.md-content [align="right"]  { text-align: right; }
+.md-content center { display: block; text-align: center; }
+.md-content big { font-size: 1.15em; }
+.md-content strong { font-weight: 700; }
+.md-content h1 { font-size: 28px; margin: 24px 0 12px; font-weight: 700; line-height: 1.25; break-after: avoid; }
+.md-content h2 { font-size: 22px; margin: 24px 0 12px; font-weight: 700; line-height: 1.25; padding-bottom: 4px; border-bottom: 1px solid #d0d7de; break-after: avoid; }
+.md-content h3 { font-size: 18px; margin: 20px 0 8px; font-weight: 600; break-after: avoid; }
+.md-content h4 { font-size: 15px; margin: 16px 0 6px; font-weight: 600; break-after: avoid; }
+.md-content p  { margin: 8px 0; word-wrap: break-word; overflow-wrap: break-word; }
+.md-content ul, .md-content ol { margin: 8px 0; padding-left: 28px; }
+.md-content li { margin: 4px 0; word-wrap: break-word; overflow-wrap: break-word; }
+.md-content li > p { margin: 2px 0; }
+.md-content blockquote { border-left: 4px solid #d0d7de; padding: 4px 16px; margin: 16px 0; color: #57606a; background: #f6f8fa; break-inside: avoid; }
+.md-content pre { background: #f6f8fa; color: #1f2328; padding: 14px; border-radius: 6px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 1.5; break-inside: avoid; }
+.md-content code { font-family: 'JetBrains Mono', ui-monospace, monospace; background: rgba(175, 184, 193, 0.2); padding: 1px 5px; border-radius: 4px; font-size: 85%; word-wrap: break-word; overflow-wrap: break-word; }
+.md-content pre code { background: none; padding: 0; font-size: 100%; }
+.md-content table { border-collapse: collapse; width: 100%; margin: 16px 0; table-layout: fixed; break-inside: avoid; }
+.md-content th, .md-content td { border: 1px solid #d0d7de; padding: 6px 13px; text-align: left; word-wrap: break-word; overflow-wrap: break-word; vertical-align: top; }
+.md-content th { background: #f6f8fa; font-weight: 600; }
+.md-content tr:nth-child(2n) td { background: #fbfcfd; }
+.md-content a { color: #0969da; text-decoration: none; word-break: break-all; }
+.md-content a:hover { text-decoration: underline; }
+.md-content img { max-width: 100%; height: auto; }
+.md-content hr { border: none; border-top: 2px solid #d0d7de; margin: 24px 0; }
+.md-content kbd { background: #f6f8fa; border: 1px solid #d0d7de; border-bottom-width: 2px; border-radius: 4px; padding: 2px 6px; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+`,
+  },
   article: {
     label: "Article",
     css: `
@@ -203,21 +251,28 @@ const STYLES = {
   max-width: 680px;
   margin: 0 auto;
   padding: 40px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
-.md-content h1 { font-size: 28px; margin: 24px 0 12px; border-bottom: 2px solid #111; padding-bottom: 6px; }
-.md-content h2 { font-size: 22px; margin: 24px 0 12px; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
-.md-content h3 { font-size: 18px; margin: 20px 0 8px; }
-.md-content p  { margin: 8px 0; }
+.md-content [align="center"] { text-align: center; }
+.md-content [align="right"]  { text-align: right; }
+.md-content center { display: block; text-align: center; }
+.md-content big { font-size: 1.15em; }
+.md-content h1 { font-size: 28px; margin: 24px 0 12px; border-bottom: 2px solid #111; padding-bottom: 6px; break-after: avoid; }
+.md-content h2 { font-size: 22px; margin: 24px 0 12px; border-bottom: 1px solid #ccc; padding-bottom: 4px; break-after: avoid; }
+.md-content h3 { font-size: 18px; margin: 20px 0 8px; break-after: avoid; }
+.md-content p  { margin: 8px 0; word-wrap: break-word; overflow-wrap: break-word; }
 .md-content ul, .md-content ol { margin: 8px 0; padding-left: 24px; }
-.md-content li { margin: 2px 0; }
-.md-content blockquote { border-left: 4px solid #888; padding: 8px 16px; margin: 16px 0; color: #555; background: #f7f7f7; }
-.md-content pre { background: #1e1e1e; color: #eee; padding: 14px; border-radius: 6px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.4; }
-.md-content code { font-family: 'JetBrains Mono', monospace; background: #f0f0f0; padding: 1px 4px; border-radius: 3px; font-size: 90%; }
+.md-content li { margin: 2px 0; word-wrap: break-word; overflow-wrap: break-word; }
+.md-content blockquote { border-left: 4px solid #888; padding: 8px 16px; margin: 16px 0; color: #555; background: #f7f7f7; break-inside: avoid; }
+.md-content pre { background: #1e1e1e; color: #eee; padding: 14px; border-radius: 6px; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.4; break-inside: avoid; }
+.md-content code { font-family: 'JetBrains Mono', monospace; background: #f0f0f0; padding: 1px 4px; border-radius: 3px; font-size: 90%; word-wrap: break-word; overflow-wrap: break-word; }
 .md-content pre code { background: none; padding: 0; color: #eee; }
-.md-content table { border-collapse: collapse; width: 100%; margin: 12px 0; }
-.md-content th, .md-content td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+.md-content table { border-collapse: collapse; width: 100%; margin: 12px 0; table-layout: fixed; break-inside: avoid; }
+.md-content th, .md-content td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; word-wrap: break-word; overflow-wrap: break-word; vertical-align: top; }
 .md-content th { background: #f0f0f0; font-weight: 600; }
-.md-content a { color: #1f6feb; text-decoration: none; }
+.md-content a { color: #1f6feb; text-decoration: none; word-break: break-all; }
 .md-content a:hover { text-decoration: underline; }
 .md-content img { max-width: 100%; height: auto; }
 .md-content hr { border: none; border-top: 1px solid #ccc; margin: 20px 0; }
@@ -234,21 +289,26 @@ const STYLES = {
   max-width: 680px;
   margin: 0 auto;
   padding: 32px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
-.md-content h1 { font-size: 24px; text-align: center; margin: 0 0 4px; letter-spacing: 0.5px; }
-.md-content h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 1.5px; border-bottom: 1px solid #222; padding-bottom: 2px; margin: 18px 0 8px; }
-.md-content h3 { font-size: 13px; margin: 10px 0 4px; }
-.md-content p  { margin: 6px 0; }
+.md-content [align="center"] { text-align: center; }
+.md-content big { font-size: 1.15em; }
+.md-content h1 { font-size: 24px; text-align: center; margin: 0 0 4px; letter-spacing: 0.5px; break-after: avoid; }
+.md-content h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 1.5px; border-bottom: 1px solid #222; padding-bottom: 2px; margin: 18px 0 8px; break-after: avoid; }
+.md-content h3 { font-size: 13px; margin: 10px 0 4px; break-after: avoid; }
+.md-content p  { margin: 6px 0; word-wrap: break-word; overflow-wrap: break-word; }
 .md-content ul, .md-content ol { margin: 6px 0; padding-left: 20px; }
-.md-content li { margin: 2px 0; }
-.md-content blockquote { font-style: italic; color: #555; margin: 8px 0; padding-left: 8px; border-left: 2px solid #ccc; }
-.md-content pre { background: #f5f5f5; padding: 10px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 11px; overflow-x: auto; }
-.md-content code { font-family: 'JetBrains Mono', monospace; background: #f0f0f0; padding: 1px 3px; border-radius: 2px; }
+.md-content li { margin: 2px 0; word-wrap: break-word; overflow-wrap: break-word; }
+.md-content blockquote { font-style: italic; color: #555; margin: 8px 0; padding-left: 8px; border-left: 2px solid #ccc; break-inside: avoid; }
+.md-content pre { background: #f5f5f5; padding: 10px; border-radius: 4px; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; font-family: 'JetBrains Mono', monospace; font-size: 11px; break-inside: avoid; }
+.md-content code { font-family: 'JetBrains Mono', monospace; background: #f0f0f0; padding: 1px 3px; border-radius: 2px; word-wrap: break-word; overflow-wrap: break-word; }
 .md-content pre code { background: none; padding: 0; }
-.md-content table { border-collapse: collapse; width: 100%; margin: 10px 0; }
-.md-content th, .md-content td { border: 1px solid #ccc; padding: 4px 8px; text-align: left; }
+.md-content table { border-collapse: collapse; width: 100%; margin: 10px 0; table-layout: fixed; break-inside: avoid; }
+.md-content th, .md-content td { border: 1px solid #ccc; padding: 4px 8px; text-align: left; word-wrap: break-word; overflow-wrap: break-word; vertical-align: top; }
 .md-content th { background: #f5f5f5; }
-.md-content a { color: #222; text-decoration: none; }
+.md-content a { color: #222; text-decoration: none; word-break: break-all; }
 .md-content img { max-width: 100%; height: auto; }
 .md-content hr { border: none; border-top: 1px solid #ccc; margin: 16px 0; }
 `,
@@ -264,22 +324,27 @@ const STYLES = {
   max-width: 680px;
   margin: 0 auto;
   padding: 48px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
-.md-content h1 { font-size: 22px; text-align: center; margin: 0 0 24px; }
-.md-content h2 { font-size: 16px; margin: 24px 0 8px; }
-.md-content h3 { font-size: 14px; margin: 18px 0 6px; }
-.md-content p  { margin: 8px 0; text-indent: 24px; }
+.md-content [align="center"] { text-align: center; }
+.md-content big { font-size: 1.15em; }
+.md-content h1 { font-size: 22px; text-align: center; margin: 0 0 24px; break-after: avoid; }
+.md-content h2 { font-size: 16px; margin: 24px 0 8px; break-after: avoid; }
+.md-content h3 { font-size: 14px; margin: 18px 0 6px; break-after: avoid; }
+.md-content p  { margin: 8px 0; text-indent: 24px; word-wrap: break-word; overflow-wrap: break-word; }
 .md-content p:first-of-type, .md-content h1 + p, .md-content h2 + p, .md-content h3 + p { text-indent: 0; }
 .md-content ul, .md-content ol { margin: 8px 0; padding-left: 24px; }
-.md-content li { margin: 2px 0; }
-.md-content blockquote { font-style: italic; margin: 12px 24px; padding-left: 8px; border-left: 2px solid #888; }
-.md-content pre { background: #f5f5f5; padding: 10px; border-radius: 3px; font-family: 'Courier New', monospace; font-size: 11px; overflow-x: auto; }
-.md-content code { font-family: 'Courier New', monospace; background: #f0f0f0; padding: 0 2px; }
+.md-content li { margin: 2px 0; word-wrap: break-word; overflow-wrap: break-word; }
+.md-content blockquote { font-style: italic; margin: 12px 24px; padding-left: 8px; border-left: 2px solid #888; break-inside: avoid; }
+.md-content pre { background: #f5f5f5; padding: 10px; border-radius: 3px; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; font-family: 'Courier New', monospace; font-size: 11px; break-inside: avoid; }
+.md-content code { font-family: 'Courier New', monospace; background: #f0f0f0; padding: 0 2px; word-wrap: break-word; overflow-wrap: break-word; }
 .md-content pre code { background: none; padding: 0; }
-.md-content table { border-collapse: collapse; width: 100%; margin: 12px 0; }
-.md-content th, .md-content td { border: 1px solid #000; padding: 4px 8px; text-align: left; }
+.md-content table { border-collapse: collapse; width: 100%; margin: 12px 0; table-layout: fixed; break-inside: avoid; }
+.md-content th, .md-content td { border: 1px solid #000; padding: 4px 8px; text-align: left; word-wrap: break-word; overflow-wrap: break-word; vertical-align: top; }
 .md-content th { background: #e0e0e0; font-weight: bold; }
-.md-content a { color: #000; text-decoration: underline; }
+.md-content a { color: #000; text-decoration: underline; word-break: break-all; }
 .md-content img { max-width: 100%; height: auto; }
 .md-content hr { border: none; border-top: 1px solid #000; margin: 20px 0; }
 `,
@@ -296,7 +361,7 @@ function renderTool(container, { toast, markDone }) {
       <div class="pk-flex pk-gap-2 pk-text-sm" style="align-items:center;flex-wrap:wrap">
         <label>Style:</label>
         <select id="md-style" style="padding:0.4rem 0.625rem;background:var(--pk-card-bg);border:1px solid var(--pk-border);border-radius:var(--pk-radius-sm);color:var(--pk-fg)">
-          ${Object.entries(STYLES).map(([k, v]) => `<option value="${k}">${v.label}</option>`).join("")}
+          ${Object.entries(STYLES).map(([k, v]) => `<option value="${k}"${k === "readme" ? " selected" : ""}>${v.label}</option>`).join("")}
         </select>
         <button class="pk-btn pk-btn--ghost pk-text-xs" id="md-sample" title="Load sample document">↺ Sample</button>
         <span id="md-count" class="pk-text-xs pk-text-subtle pk-text-mono"></span>
@@ -391,16 +456,18 @@ function renderTool(container, { toast, markDone }) {
   });
 
   // Download PDF
-  // BUG FIX: Build a proper .md-content wrapper (not a full HTML doc string
-  // which loses its <body> when assigned via innerHTML). Attach the container
-  // to the DOM off-screen so html2canvas can measure layout correctly. The
-  // .md-content selector in the CSS now properly applies padding, centering,
-  // and font styles to the PDF output.
+  // BUG FIX: Use a UNIQUE ID on the source element so html2pdf/html2canvas
+  // grabs the correct off-screen export container — not the visible preview
+  // or some random small element on the page (which was happening before
+  // and producing tiny single-line PDFs with cut-off tables).
+  // Also: explicitly set width on html2canvas so wide tables fit, and use
+  // pagebreak rules that avoid splitting tables/pre/headings across pages.
   wrap.querySelector("#md-download").addEventListener("click", async () => {
     const btn = wrap.querySelector("#md-download");
     const originalText = btn.textContent;
     btn.disabled = true;
     btn.innerHTML = `<span class="pk-spinner"></span> Generating…`;
+    let exportNode = null;
     try {
       const md = input.value;
       if (!md.trim()) {
@@ -411,39 +478,53 @@ function renderTool(container, { toast, markDone }) {
       const css = STYLES[styleKey].css;
       const html = marked.parse(md, { gfm: true, breaks: false });
 
-      // Build off-screen container with the SAME .md-content wrapper the
-      // preview uses. This guarantees the CSS rules apply identically.
-      const exportNode = document.createElement("div");
-      exportNode.style.cssText = "position:fixed;left:-9999px;top:0;width:794px;background:#fff;color:#111;";
-      exportNode.innerHTML = `<style>${css}</style><div class="md-content">${html}</div>`;
+      // Build off-screen container with a UNIQUE ID and proper A4-friendly width.
+      // A4 at 96 DPI = 794px. We use 800px to give a little breathing room
+      // before html2pdf scales it down to fit A4 (595pt with 10mm margins).
+      const sourceId = `md-pdf-source-${Date.now()}`;
+      exportNode = document.createElement("div");
+      exportNode.id = `md-pdf-export-${Date.now()}`;
+      exportNode.style.cssText = "position:fixed;left:-9999px;top:0;width:800px;background:#fff;color:#111;box-sizing:border-box;";
+      exportNode.innerHTML = `<style>${css}</style><div class="md-content" id="${sourceId}">${html}</div>`;
       document.body.appendChild(exportNode);
 
-      // Wait a tick for layout
-      await new Promise((r) => setTimeout(r, 50));
+      // Wait for layout + fonts to settle
+      await new Promise((r) => setTimeout(r, 100));
+
+      const sourceEl = document.getElementById(sourceId);
+      const sourceWidth = sourceEl.scrollWidth || 800;
+      const sourceHeight = sourceEl.scrollHeight;
+
+      console.log(`[Day 7 PDF] source element: ${sourceWidth}x${sourceHeight}px`);
 
       const opt = {
         margin: [10, 10, 10, 10],
         filename: `document-${Date.now()}.pdf`,
         image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff", logging: false },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false,
+          width: sourceWidth,
+          windowWidth: sourceWidth,
+        },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        pagebreak: { mode: ["css", "legacy"] },
+        pagebreak: { mode: ["css", "legacy"], avoid: ["table", "pre", "blockquote", "h1", "h2", "h3"] },
       };
 
-      await html2pdf().set(opt).from(exportNode.querySelector(".md-content")).save();
-
-      // Clean up
-      document.body.removeChild(exportNode);
+      await html2pdf().set(opt).from(sourceEl).save();
 
       toast("PDF downloaded", "success");
       markDone();
     } catch (e) {
       console.error("PDF export error:", e);
       toast("PDF generation failed: " + (e.message || "unknown error"), "error");
-      // Clean up if container still attached
-      const leftover = document.querySelector('div[style*="left:-9999px"]');
-      if (leftover) leftover.remove();
     } finally {
+      // Clean up export container if still attached
+      if (exportNode && exportNode.parentNode) {
+        exportNode.parentNode.removeChild(exportNode);
+      }
       btn.disabled = false;
       btn.textContent = originalText;
     }
