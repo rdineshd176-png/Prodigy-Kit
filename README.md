@@ -20,7 +20,7 @@
 
 ## 📅 The 10-Day Utility Sprint
 
-Each utility is a standalone folder under `tools/`. The dashboard checks tool routes and displays published tools as LIVE while upcoming releases remain locked. Day 7, Markdown → PDF, is now live; Days 8–10 remain locked.
+Each utility is a standalone folder under `tools/`. The dashboard checks tool routes and displays published tools as LIVE while upcoming releases remain locked. Day 8, Link X-Ray, is now live; Days 9–10 remain locked.
 
 | Day | Tool | What it does | Engine / Library | Status |
 | :--- | :--- | :--- | :--- | :--- |
@@ -31,11 +31,11 @@ Each utility is a standalone folder under `tools/`. The dashboard checks tool ro
 | **Day 5** | **QR Studio** | Generate static QR codes for URLs, Wi-Fi credentials, and text; customize colors and export PNG/SVG. | `qrcode@1.5.4` | ✅ **LIVE** |
 | **Day 6** | **Background Remover** | Cut out image backgrounds with browser-based AI, choose transparent or solid/custom fills, and export PNGs. | `@imgly/background-removal` v1.7.0 | ✅ **LIVE** |
 | **Day 7** | **Markdown → PDF** | Edit Markdown with a live A4 preview, copy standalone HTML, and export a formatted PDF. | `marked@18.1.0` & `html2pdf.js@0.14.0` | ✅ **LIVE** |
-| **Day 8** | **Link X-Ray** | Remove tracking parameters and inspect URLs. | `URL API` | 🔒 Upcoming |
+| **Day 8** | **Link X-Ray** | Strip 40+ common tracking parameters, inspect URL structure, and flag selected suspicious URL patterns. | Browser `URL` API | ✅ **LIVE** |
 | **Day 9** | **Crypto Kit** | Encode, decode, and hash values for development and CTF work. | `CryptoJS` | 🔒 Upcoming |
 | **Day 10** | **Media Extractor** | Extract audio and trim supported media locally in the browser. | `FFmpeg.wasm` | 🔒 Upcoming |
 
-*Release schedule: Day 1 — October 12, 2026; Day 5 — October 16, 2026; Day 6 — October 17, 2026; Day 7 — October 18, 2026. Days 8–10 remain locked until their releases.*
+*Release schedule: Day 1 — October 12, 2026; Day 5 — October 16, 2026; Day 6 — October 17, 2026; Day 7 — October 18, 2026; Day 8 — October 19, 2026. Days 9–10 remain locked until their releases.*
 
 ## 🗂️ Project Structure
 
@@ -66,7 +66,11 @@ prodigy-kit/
     │   ├── index.html
     │   ├── style.css
     │   └── app.js
-    └── day7-markdown/           # Day 7 — LIVE
+    ├── day7-markdown/           # Day 7 — LIVE
+    │   ├── index.html
+    │   ├── style.css
+    │   └── app.js
+    └── day8-linkxray/            # Day 8 — LIVE
         ├── index.html
         ├── style.css
         └── app.js
@@ -85,6 +89,37 @@ Benefits:
 - **Independent styling:** Each tool can maintain its own UI and theme implementation.
 
 The trade-off is duplicated code: updates to theme tokens or shared logic may need to be copied into multiple standalone tools.
+
+## 🔎 Day 8 Spotlight: Link X-Ray
+
+**Clean tracking clutter from URLs and inspect common warning signs before opening a link.**
+
+Day 8 uses the browser's native `URL` API to parse links and remove more than 40 common tracking parameters directly in the page. It also breaks a URL into its protocol, host, path, query, and fragment, and displays warnings for selected patterns that deserve closer inspection.
+
+### Features
+
+- **Tracker stripping:** Removes common UTM tags, advertising click IDs such as `fbclid` and `gclid`, email campaign identifiers, and other known tracking parameters. It also removes additional parameters beginning with `utm_`.
+- **Clean URL result:** Shows the cleaned link and how many tracking parameters were removed.
+- **Removed-parameter details:** Lists the tracking parameter names and their values so you can see what was stripped.
+- **URL anatomy:** Displays the protocol, host, path, query string, and fragment when present.
+- **Suspicious-pattern warnings:** Flags recognized URL shorteners, Punycode domains, mixed Latin/Cyrillic/Greek scripts in hostnames, embedded credentials, IPv4-address hosts, plain HTTP links, and unusually long top-level domains.
+- **Copy or open:** Copy the cleaned URL or open it in a new tab.
+- **Clear and retry:** Clear the input and results to analyze another link.
+- **Three themes:** Supports Pro, Arcade, and Pookie modes.
+
+### How It Works
+
+1. Paste a URL into the input field. Include `https://` if the browser parser needs a complete URL.
+2. Select **Analyze & Strip**.
+3. Review the cleaned URL, removed tracking parameters, URL anatomy, and any warnings.
+4. Use **Copy clean URL** to copy the result, or open it in a new tab only if you trust the destination.
+5. Select **Clear** to start over.
+
+### Privacy and Safety Notes
+
+Link parsing, tracking-parameter removal, and the listed pattern checks run in the browser; the tool does not send the pasted URL to a Prodigy Kit application backend. The interface still loads fonts and Lucide icons from external CDNs, so the page may make network requests for those resources.
+
+Link X-Ray is a lightweight inspection aid, not a full reputation scanner or a guarantee that a URL is safe. A missing warning does not prove a site is trustworthy. It identifies known shortener domains but does **not** follow their redirects or reveal the final destination, because doing so would require a server-side lookup. Review the destination carefully before visiting it.
 
 ## 📝 Day 7 Spotlight: Markdown → PDF
 
@@ -210,6 +245,7 @@ Theme selection is persisted through `localStorage` where configured. The theme 
 | `@imgly/background-removal` v1.7.0 | Browser-based AI background removal in Day 6 |
 | `marked@18.1.0` | Markdown parsing and GitHub-flavored Markdown rendering in Day 7 |
 | `html2pdf.js@0.14.0` | Browser-side PDF generation in Day 7 |
+| Browser `URL` API | URL parsing, tracker removal, and URL pattern checks in Day 8 |
 | `CryptoJS` | Cryptographic utilities |
 | `FFmpeg.wasm` | Browser-based media processing |
 
@@ -259,6 +295,7 @@ Visit [http://localhost:8000](http://localhost:8000).
 - **Day 5 — QR Studio:** [http://localhost:8000/tools/day5-qr/](http://localhost:8000/tools/day5-qr/)
 - **Day 6 — Background Remover:** [http://localhost:8000/tools/day6-bgremover/](http://localhost:8000/tools/day6-bgremover/)
 - **Day 7 — Markdown → PDF:** [http://localhost:8000/tools/day7-markdown/](http://localhost:8000/tools/day7-markdown/)
+- **Day 8 — Link X-Ray:** [http://localhost:8000/tools/day8-linkxray/](http://localhost:8000/tools/day8-linkxray/)
 
 ## 🚀 Deploy to Netlify
 
@@ -295,6 +332,7 @@ Prodigy Kit is designed for everyday file and text utilities that should not aut
 - The Snippet Vault encrypts and decrypts text in the browser.
 - QR Studio generates QR codes locally using its client-side library.
 - The Background Remover runs its image inference in the browser; its AI model and required web resources are downloaded on first use.
+- Link X-Ray parses URLs and removes recognized tracking parameters locally without sending the pasted URL to a Prodigy Kit application backend.
 - The dashboard stores supported preferences, such as the selected theme, locally.
 
 External libraries, fonts, and icons may still load from CDNs at runtime, so the site does make network requests. The design avoids sending tool input to a QR-generation service, but every tool should be reviewed independently before handling sensitive information.
@@ -318,6 +356,8 @@ For the Snippet Vault, test encryption, decryption, malformed links, and passcod
 For the Background Remover, test file-picker and drag-and-drop uploads, JPG/PNG/WEBP samples, transparent and each solid/custom background option, and the downloaded PNG. Also check first-run model loading, repeat use after the model is cached, and the browser console for errors.
 
 For Markdown → PDF, test live preview updates, headings, lists, tables, links, quotes, and fenced code blocks. Verify **Copy HTML**, **Clear**, **Sample**, and PDF export, including multi-page documents and long lines or wide tables. Review the generated PDF for clipping and page-break issues.
+
+For Link X-Ray, test URLs with UTM tags and click IDs, URLs with no tracking parameters, extra `utm_` variants, invalid or incomplete URLs, and each warning category. Check the cleaned URL, removed-parameter list, URL anatomy, copy/open actions, clear/reset behavior, and all three themes. Remember that shortener detection warns about a link but does not resolve its redirect.
 
 ## 🤝 Contributions
 
