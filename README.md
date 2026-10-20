@@ -20,7 +20,7 @@
 
 ## 📅 The 10-Day Utility Sprint
 
-Each utility is a standalone folder under `tools/`. The dashboard checks tool routes and displays published tools as LIVE while upcoming releases remain locked. Day 8, Link X-Ray, is now live; Days 9–10 remain locked.
+Each utility is a standalone folder under `tools/`. The dashboard checks tool routes and displays published tools as LIVE while upcoming releases remain locked. Day 9, Crypto Kit, is now live; only Day 10 remains locked.
 
 | Day | Tool | What it does | Engine / Library | Status |
 | :--- | :--- | :--- | :--- | :--- |
@@ -32,10 +32,10 @@ Each utility is a standalone folder under `tools/`. The dashboard checks tool ro
 | **Day 6** | **Background Remover** | Cut out image backgrounds with browser-based AI, choose transparent or solid/custom fills, and export PNGs. | `@imgly/background-removal` v1.7.0 | ✅ **LIVE** |
 | **Day 7** | **Markdown → PDF** | Edit Markdown with a live A4 preview, copy standalone HTML, and export a formatted PDF. | `marked@18.1.0` & `html2pdf.js@0.14.0` | ✅ **LIVE** |
 | **Day 8** | **Link X-Ray** | Strip 40+ common tracking parameters, inspect URL structure, and flag selected suspicious URL patterns. | Browser `URL` API | ✅ **LIVE** |
-| **Day 9** | **Crypto Kit** | Encode, decode, and hash values for development and CTF work. | `CryptoJS` | 🔒 Upcoming |
+| **Day 9** | **Crypto Kit** | Convert between common encodings, decode JWT headers and payloads, and generate hashes or HMACs. | `crypto-js@4.2.0` & browser APIs | ✅ **LIVE** |
 | **Day 10** | **Media Extractor** | Extract audio and trim supported media locally in the browser. | `FFmpeg.wasm` | 🔒 Upcoming |
 
-*Release schedule: Day 1 — October 12, 2026; Day 5 — October 16, 2026; Day 6 — October 17, 2026; Day 7 — October 18, 2026; Day 8 — October 19, 2026. Days 9–10 remain locked until their releases.*
+*Release schedule: Day 1 — October 12, 2026; Day 5 — October 16, 2026; Day 6 — October 17, 2026; Day 7 — October 18, 2026; Day 8 — October 19, 2026; Day 9 — October 20, 2026. Day 10 remains upcoming.*
 
 ## 🗂️ Project Structure
 
@@ -70,7 +70,11 @@ prodigy-kit/
     │   ├── index.html
     │   ├── style.css
     │   └── app.js
-    └── day8-linkxray/            # Day 8 — LIVE
+    ├── day8-linkxray/            # Day 8 — LIVE
+    │   ├── index.html
+    │   ├── style.css
+    │   └── app.js
+    └── day9-cryptokit/             # Day 9 — LIVE
         ├── index.html
         ├── style.css
         └── app.js
@@ -89,6 +93,40 @@ Benefits:
 - **Independent styling:** Each tool can maintain its own UI and theme implementation.
 
 The trade-off is duplicated code: updates to theme tokens or shared logic may need to be copied into multiple standalone tools.
+
+## 🔐 Day 9 Spotlight: Crypto Kit
+
+**A browser-based toolkit for common encodings, JSON Web Token inspection, and hash generation.**
+
+Crypto Kit brings three utilities into one page: a Multi-Translator for quickly converting text and encoded data, a JWT Decoder for inspecting token contents, and Hash Generators for producing common digest and HMAC outputs. It is designed for developer workflows, security learning, and CTF analysis without sending the entered values to a Prodigy Kit application backend.
+
+### Features
+
+- **Multi-Translator:** Automatically displays text as Base64, hexadecimal, binary, and URL-encoded output.
+- **Decode controls:** Convert input from Base64, hex, binary, ASCII/`\xNN` escapes, or URL encoding back into readable text when the data is valid.
+- **Copy output:** Copy individual encoded representations or generated hash values.
+- **JWT Decoder:** Parse a JWT and display its header, payload, algorithm label, and signature segment.
+- **Expiry hint:** Show the payload's `exp` timestamp as an expiry/valid-until note when that claim is present.
+- **Hash Generators:** Generate MD5, SHA-1, SHA-224, SHA-256, SHA-384, SHA-512, SHA-3 (256-bit output), and RIPEMD-160 digests.
+- **Optional HMAC:** Generate the corresponding keyed HMAC values using a supplied secret.
+- **Clear controls and tabs:** Switch among the translator, JWT decoder, and hash generator, with clear/reset controls where provided.
+- **Three themes:** Switch between Pro, Arcade, and Pookie modes.
+
+### How It Works
+
+1. Open **Multi-Translator** and enter text or encoded data. The tool updates Base64, hex, binary, and URL-encoded representations as you type.
+2. To decode existing data, choose the matching **Decode as** button. Invalid input displays an error rather than a decoded result.
+3. Open **JWT Decoder**, paste a token, and select **Decode JWT** to inspect its header, payload, and signature segment.
+4. Open **Hash Generators**, enter text, and select **Generate hashes**. Enable **Use HMAC (with secret)** and provide a secret when keyed outputs are needed.
+5. Use the copy buttons to copy an individual encoding or hash. Use the theme switcher to change the interface appearance.
+
+### Security and Privacy Notes
+
+The encoding conversions, JWT parsing, and hash/HMAC operations run in the browser; the tool code does not send the entered values to a Prodigy Kit application backend. Crypto Kit imports `crypto-js@4.2.0` from `esm.sh`, while fonts and icons are also loaded from external CDNs. Consequently, a first visit or uncached resource may require an internet connection even though the input processing is client-side.
+
+**JWT decoding is not JWT verification.** The tool displays token contents but does not validate the signature, prove who issued the token, or establish that its claims are trustworthy. Do not use decoded claims as proof of authorization, and avoid pasting live credentials or sensitive production tokens into tools you do not control.
+
+Hash functions are not encryption and cannot be reversed to recover the original input. MD5 and SHA-1 are provided for compatibility and analysis, not for security-critical new designs. This utility is not a password-storage system; do not use its plain hashes as a substitute for a dedicated password-hashing scheme.
 
 ## 🔎 Day 8 Spotlight: Link X-Ray
 
@@ -246,7 +284,7 @@ Theme selection is persisted through `localStorage` where configured. The theme 
 | `marked@18.1.0` | Markdown parsing and GitHub-flavored Markdown rendering in Day 7 |
 | `html2pdf.js@0.14.0` | Browser-side PDF generation in Day 7 |
 | Browser `URL` API | URL parsing, tracker removal, and URL pattern checks in Day 8 |
-| `CryptoJS` | Cryptographic utilities |
+| `crypto-js@4.2.0` | Hash and HMAC generation in Day 9 |
 | `FFmpeg.wasm` | Browser-based media processing |
 
 Libraries are loaded from configured CDNs where applicable. Check individual tool source files for exact versions and imports.
@@ -296,6 +334,7 @@ Visit [http://localhost:8000](http://localhost:8000).
 - **Day 6 — Background Remover:** [http://localhost:8000/tools/day6-bgremover/](http://localhost:8000/tools/day6-bgremover/)
 - **Day 7 — Markdown → PDF:** [http://localhost:8000/tools/day7-markdown/](http://localhost:8000/tools/day7-markdown/)
 - **Day 8 — Link X-Ray:** [http://localhost:8000/tools/day8-linkxray/](http://localhost:8000/tools/day8-linkxray/)
+- **Day 9 — Crypto Kit:** [http://localhost:8000/tools/day9-cryptokit/](http://localhost:8000/tools/day9-cryptokit/)
 
 ## 🚀 Deploy to Netlify
 
@@ -333,6 +372,7 @@ Prodigy Kit is designed for everyday file and text utilities that should not aut
 - QR Studio generates QR codes locally using its client-side library.
 - The Background Remover runs its image inference in the browser; its AI model and required web resources are downloaded on first use.
 - Link X-Ray parses URLs and removes recognized tracking parameters locally without sending the pasted URL to a Prodigy Kit application backend.
+- Crypto Kit performs text encoding conversions, JWT decoding, and hash/HMAC calculations in the browser without an application backend call.
 - The dashboard stores supported preferences, such as the selected theme, locally.
 
 External libraries, fonts, and icons may still load from CDNs at runtime, so the site does make network requests. The design avoids sending tool input to a QR-generation service, but every tool should be reviewed independently before handling sensitive information.
@@ -358,6 +398,8 @@ For the Background Remover, test file-picker and drag-and-drop uploads, JPG/PNG/
 For Markdown → PDF, test live preview updates, headings, lists, tables, links, quotes, and fenced code blocks. Verify **Copy HTML**, **Clear**, **Sample**, and PDF export, including multi-page documents and long lines or wide tables. Review the generated PDF for clipping and page-break issues.
 
 For Link X-Ray, test URLs with UTM tags and click IDs, URLs with no tracking parameters, extra `utm_` variants, invalid or incomplete URLs, and each warning category. Check the cleaned URL, removed-parameter list, URL anatomy, copy/open actions, clear/reset behavior, and all three themes. Remember that shortener detection warns about a link but does not resolve its redirect.
+
+For Crypto Kit, test text-to-encoding output and decoding from Base64, hexadecimal, binary, ASCII/`\xNN`, and URL encoding. Check the JWT header/payload display and expiry note, plus each hash algorithm and optional HMAC mode. Confirm copy buttons work. JWT decoding does **not** verify signatures or establish that a token is trustworthy. MD5 and SHA-1 are included for compatibility and analysis, not as choices for security-critical new designs; these hashes are not password-storage functions. The page imports CryptoJS and interface resources from CDNs, so do not assume the entire page is usable offline on a first visit.
 
 ## 🤝 Contributions
 
