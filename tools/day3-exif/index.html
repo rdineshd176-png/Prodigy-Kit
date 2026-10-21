@@ -9,12 +9,12 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Pacifico&family=JetBrains+Mono:wght@400;500;600&family=Quicksand:wght@500;600;700&family=Nunito:wght@400;500;600;700&family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Quicksand:wght@500;600;700&family=Nunito:wght@400;500;600;700&family=VT323&family=Press+Start+2P&display=swap" rel="stylesheet" />
 
-  <!-- Standalone day styles (includes tokens + base + shell + tool-specific) -->
-  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="../../assets/styles/tokens.css" />
+  <link rel="stylesheet" href="../../assets/styles/base.css" />
+  <link rel="stylesheet" href="../../assets/styles/shell.css" />
 
-  <!-- Lucide icons -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
 </head>
 <body>
@@ -26,7 +26,8 @@
         <a href="../../index.html" class="pk-logo" aria-label="Prodigy Kit home">
           <span class="pk-logo__mark"><i data-lucide="gem"></i></span>
           <span class="pk-logo__brand">
-            <span class="pk-logo__brand-main">Prodigy Kit</span>
+            <span class="pk-logo__brand-main">Prodigy</span>
+            <span class="pk-logo__brand-sub">Kit</span>
           </span>
         </a>
         <div class="pk-topbar__actions">
@@ -76,7 +77,46 @@
 
   <div class="pk-toast-stack" id="pk-toast-stack" aria-live="polite" aria-atomic="true"></div>
 
-  <!-- Standalone day script (includes store + theme + tool logic) -->
-  <script type="module" src="./app.js"></script>
+  <script type="module">
+    import { mount } from "./app.js";
+    import { hydrate, getState, subscribe, setTheme, markDone, toast } from "../../assets/lib/store.js";
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      const themeColor = theme === "pookie" ? "#fef6f9" : theme === "arcade" ? "#050208" : "#150826";
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute("content", themeColor);
+      document.querySelectorAll(".pk-themeswitch__btn").forEach((btn) => {
+        btn.setAttribute("aria-pressed", String(btn.dataset.theme === theme));
+      });
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function init() {
+      hydrate();
+      applyTheme(getState().theme);
+      document.querySelectorAll(".pk-themeswitch__btn").forEach((btn) => {
+        btn.addEventListener("click", () => setTheme(btn.dataset.theme));
+      });
+      subscribe("theme", (state) => applyTheme(state.theme));
+
+      const container = document.getElementById("day3-mount");
+      if (container && typeof mount === "function") {
+        mount(container, {
+          toast,
+          markDone: () => markDone("day3-exif"),
+        });
+      }
+
+      if (window.lucide) window.lucide.createIcons();
+      else window.addEventListener("load", () => window.lucide && window.lucide.createIcons());
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", init);
+    } else {
+      init();
+    }
+  </script>
 </body>
 </html>

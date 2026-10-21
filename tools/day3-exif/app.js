@@ -1,147 +1,10 @@
 // =========================================================================
-// EXIF Scrubber — Standalone app.js (Day 3 of Prodigy Kit)
-// Fully self-contained: store + theme logic + tool rendering
-// No external dependencies except the library imports below
-// =========================================================================
-
-// Library imports (must be at top of ES module)
-import ExifReader from "https://esm.sh/exifreader@4.49.0";
-
-// =========================================================================
-// Store (inlined from assets/lib/store.js)
-// =========================================================================
-
-// =========================================================================
-// Prodigy Kit — Global Store
-// Tiny pub/sub state manager. Vanilla JS, no framework needed.
-// =========================================================================
-
-const LS_KEYS = {
-  theme: "prodigy_kit_theme",
-  onboarded: "prodigy_kit_onboarded",
-  progress: "prodigy_kit_progress",
-  sounds: "prodigy_kit_sounds",
-};
-
-const state = {
-  theme: "pro",
-  onboarded: false,
-  progress: {},
-  sounds: false,
-};
-
-const listeners = new Map();
-
-function getState() {
-  return state;
-}
-
-function subscribe(key, fn) {
-  if (!listeners.has(key)) listeners.set(key, new Set());
-  listeners.get(key).add(fn);
-  return () => listeners.get(key)?.delete(fn);
-}
-
-function emit(key) {
-  listeners.get(key)?.forEach((fn) => {
-    try { fn(state); } catch (e) { console.error(e); }
-  });
-}
-
-// ---- Hydrate from localStorage ----
-function hydrate() {
-  try {
-    const theme = localStorage.getItem(LS_KEYS.theme);
-    if (theme && ["pro", "arcade", "pookie"].includes(theme)) {
-      state.theme = theme;
-    }
-    state.onboarded = localStorage.getItem(LS_KEYS.onboarded) === "true";
-    const progress = localStorage.getItem(LS_KEYS.progress);
-    if (progress) {
-      try { state.progress = JSON.parse(progress); } catch { state.progress = {}; }
-    }
-    state.sounds = localStorage.getItem(LS_KEYS.sounds) === "true";
-  } catch {}
-}
-
-// ---- Theme ----
-function setTheme(theme) {
-  if (!["pro", "arcade", "pookie"].includes(theme)) return;
-  state.theme = theme;
-  try { localStorage.setItem(LS_KEYS.theme, theme); } catch {}
-  emit("theme");
-}
-
-// ---- Onboarding ----
-function setOnboarded(v = true) {
-  state.onboarded = v;
-  try { localStorage.setItem(LS_KEYS.onboarded, String(v)); } catch {}
-  emit("onboarded");
-}
-
-// ---- Progress ----
-function markDone(toolId) {
-  if (state.progress[toolId]) return;
-  state.progress[toolId] = true;
-  try { localStorage.setItem(LS_KEYS.progress, JSON.stringify(state.progress)); } catch {}
-  emit("progress");
-}
-
-function isDone(toolId) {
-  return !!state.progress[toolId];
-}
-
-// ---- Toast (lightweight) ----
-function toast(message, type = "info", duration = 3500) {
-  const stack = document.getElementById("pk-toast-stack");
-  if (!stack) return;
-
-  const el = document.createElement("div");
-  el.className = `pk-toast pk-toast--${type}`;
-  el.textContent = message;
-  stack.appendChild(el);
-
-  setTimeout(() => {
-    el.classList.add("pk-toast--fade-out");
-    setTimeout(() => el.remove(), 200);
-  }, duration);
-}
-
-
-// =========================================================================
-// Theme application
-// =========================================================================
-
-const LOGO_ICONS = {'pro': 'gem', 'arcade': 'trophy', 'pookie': 'sparkles'};
-
-function applyTheme(theme) {
-  document.documentElement.setAttribute("data-theme", theme);
-  const themeColor = theme === "pookie" ? "#fef6f9" : theme === "arcade" ? "#050208" : "#150826";
-  const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", themeColor);
-  document.querySelectorAll(".pk-themeswitch__btn").forEach((btn) => {
-    btn.setAttribute("aria-pressed", String(btn.dataset.theme === theme));
-  });
-  // Update logo mark icon based on theme
-  const logoMark = document.querySelector(".pk-logo__mark");
-  if (logoMark) {
-    logoMark.innerHTML = `<i data-lucide="${LOGO_ICONS[theme] || "gem"}"></i>`;
-  }
-  if (window.lucide && typeof window.lucide.createIcons === "function") {
-    window.lucide.createIcons();
-  }
-}
-
-// =========================================================================
-// Tool rendering (inlined from day-03-exif-scrubber.js)
-// =========================================================================
-
-// =========================================================================
 // Day 3 — EXIF & Metadata Scrubber
 // Sub-tools: Creepy Data Inspector (ExifReader) + Zero-Trace Scrubber (canvas redraw)
 // All client-side, nothing leaves the browser
 // =========================================================================
 
+import ExifReader from "https://esm.sh/exifreader@4.49.0";
 
 function el(tag, attrs = {}, children = []) {
   const e = document.createElement(tag);
@@ -210,7 +73,7 @@ function formatValue(v) {
   return String(v);
 }
 
-function renderTool(container, { toast, markDone }) {
+export function mount(container, { toast, markDone }) {
   container.innerHTML = "";
   const wrap = el("div");
 
@@ -440,41 +303,4 @@ function renderTool(container, { toast, markDone }) {
   wrap.appendChild(info);
 
   container.appendChild(wrap);
-}
-
-
-// =========================================================================
-// Init
-// =========================================================================
-
-function init() {
-  hydrate();
-  applyTheme(getState().theme);
-
-  // Wire theme switcher
-  document.querySelectorAll(".pk-themeswitch__btn").forEach((btn) => {
-    btn.addEventListener("click", () => setTheme(btn.dataset.theme));
-  });
-  subscribe("theme", (state) => applyTheme(state.theme));
-
-  // Mount the tool
-  const container = document.getElementById("day3-mount");
-  if (container && typeof renderTool === "function") {
-    renderTool(container, {
-      toast,
-      markDone: () => markDone("day3-exif"),
-    });
-  }
-
-  // Refresh Lucide icons
-  if (window.lucide) window.lucide.createIcons();
-  else window.addEventListener("load", () => window.lucide && window.lucide.createIcons());
-
-  console.log("Day 3 — EXIF Scrubber loaded.");
-}
-
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", init);
-} else {
-  init();
 }
