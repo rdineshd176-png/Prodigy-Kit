@@ -1,7 +1,8 @@
 // =========================================================================
 // Attendance Calculator — Standalone app.js (Day 10 of Prodigy Kit)
-// 4 features: Quick Calc, Bunk Predictor, Recovery Planner, Subject Tracker
-// Sarcastic commentary included. You're welcome.
+// Simple single-screen calculator: target % + attended + total → output
+// Shows either "you can bunk X classes" or "you need to attend X more"
+// Sarcastic commentary included. Part of Prodigy Kit (full theme system).
 // =========================================================================
 
 // =========================================================================
@@ -13,7 +14,6 @@ const LS_KEYS = {
   onboarded: "prodigy_kit_onboarded",
   progress: "prodigy_kit_progress",
   sounds: "prodigy_kit_sounds",
-  subjects: "prodigy_kit_subjects_v1",
 };
 
 const state = {
@@ -93,20 +93,6 @@ function toast(message, type = "info", duration = 3500) {
   }, duration);
 }
 
-// Subject tracker storage helpers
-function loadSubjects() {
-  try {
-    const raw = localStorage.getItem(LS_KEYS.subjects);
-    if (!raw) return [];
-    const arr = JSON.parse(raw);
-    return Array.isArray(arr) ? arr : [];
-  } catch { return []; }
-}
-
-function saveSubjects(subjects) {
-  try { localStorage.setItem(LS_KEYS.subjects, JSON.stringify(subjects)); } catch {}
-}
-
 // =========================================================================
 // Theme application
 // =========================================================================
@@ -134,67 +120,55 @@ function applyTheme(theme) {
 // Attendance Calculator — Core Math
 // =========================================================================
 
-function clampPositive(n, fallback = 0) {
+function clampPositive(n, fallback) {
   const v = Number(n);
-  if (!isFinite(v) || v < 0) return fallback;
+  if (!isFinite(v) || v < 0) return fallback === undefined ? 0 : fallback;
   return v;
 }
 
-function calcPercent(attended, total) {
+// If current % >= target: how many classes can you bunk (skip) while staying >= target?
+// Uses integer arithmetic to avoid floating-point precision issues:
+//   (attended - B) / total >= target/100
+//   100*attended - 100*B >= target*total
+//   B <= (100*attended - target*total) / 100
+function calcBunks(attended, total, target) {
   if (total <= 0) return 0;
-  return (attended / total) * 100;
+  const bunks = Math.floor((100 * attended - target * total) / 100);
+  return Math.max(0, bunks);
 }
 
-// Bunk predictor: max classes you can skip out of `upcoming` while staying >= target
-function calcMaxBunks(attended, total, target, upcoming) {
-  // After skipping B, you've attended `attended` out of `total + upcoming`
-  // We want attended / (total + upcoming) >= target (assuming you attend all OTHER upcoming)
-  // Wait: upcoming = total classes still to come. If you skip B, you attend upcoming - B.
-  // Final state: attended + (upcoming - B) attended out of total + upcoming total.
-  // (attended + upcoming - B) / (total + upcoming) >= target
-  // attended + upcoming - B >= target * (total + upcoming)
-  // B <= attended + upcoming - target * (total + upcoming)
-  const denom = total + upcoming;
-  if (denom <= 0) return 0;
-  const maxBunks = Math.floor(attended + upcoming - (target / 100) * denom);
-  return Math.max(0, Math.min(maxBunks, upcoming));
-}
-
-// Recovery planner: how many consecutive classes needed to hit target
+// If current % < target: how many consecutive classes needed to reach target?
+// Uses integer arithmetic to avoid floating-point precision issues:
+//   (attended + R) / (total + R) >= target/100
+//   100*(attended + R) >= target*(total + R)
+//   100*attended + 100*R >= target*total + target*R
+//   R*(100 - target) >= target*total - 100*attended
+//   R >= (target*total - 100*attended) / (100 - target)
 function calcRecovery(attended, total, target) {
   if (total <= 0) return 0;
   if ((attended / total) * 100 >= target) return 0;
-  // (attended + R) / (total + R) >= target/100
-  // attended + R >= (target/100) * (total + R)
-  // attended + R >= (target/100)*total + (target/100)*R
-  // R * (1 - target/100) >= (target/100)*total - attended
-  // R >= ((target/100)*total - attended) / (1 - target/100)
-  const t = target / 100;
-  const needed = Math.ceil((t * total - attended) / (1 - t));
+  const needed = Math.ceil((target * total - 100 * attended) / (100 - target));
   return Math.max(0, needed);
 }
 
-// Sarcastic quote based on attendance percentage
+// Sarcastic quote engine
 function getQuoteFor(percent) {
-  if (percent >= 95) return { tone: "roast", quote: "95%+ attendance. Did you get a gold star? Touch grass." };
-  if (percent >= 85) return { tone: "meh", quote: "Solid. Boring, but solid. You'll survive." };
-  if (percent >= 75) return { tone: "ok", quote: "You're safe. For now. The rector is watching." };
-  if (percent >= 60) return { tone: "warn", quote: "Borderline. The deficiency email is being drafted." };
-  if (percent >= 40) return { tone: "danger", quote: "Below 60%. Your parents are getting a call." };
-  if (percent > 0) return { tone: "critical", quote: "Sub-40%. Consider this a personality trait at this point." };
-  return { tone: "neutral", quote: "Zero attendance. Either you're a ghost or this is your first day." };
+  if (percent >= 95) return { color: "#10b981", quote: "95%+ attendance. Did you get a gold star? Touch grass." };
+  if (percent >= 85) return { color: "#10b981", quote: "Solid. Boring, but solid. You'll survive." };
+  if (percent >= 75) return { color: "#10b981", quote: "You're safe. For now. The rector is watching." };
+  if (percent >= 60) return { color: "#f59e0b", quote: "Borderline. The deficiency email is being drafted." };
+  if (percent >= 40) return { color: "#ef4444", quote: "Below 60%. Your parents are getting a call." };
+  if (percent > 0) return { color: "#ef4444", quote: "Sub-40%. Consider this a personality trait at this point." };
+  return { color: "var(--pk-fg-muted)", quote: "Zero attendance. Either you're a ghost or this is your first day." };
 }
 
-// Quote for bunk result
-function getBunkQuote(bunks, upcoming) {
+function getBunkQuote(bunks) {
   if (bunks === 0) return "0 bunks available. Tough luck, sport. Go sit in the back row.";
-  if (bunks === upcoming) return "ALL of them. You can bunk everything. (Don't. That's how you get caught.)";
   if (bunks === 1) return "1 bunk. Use it wisely. Or don't. I'm a calculator, not your mom.";
   if (bunks <= 3) return `${bunks} bunks. Live your chaotic life. Don't push it further.`;
   return `${bunks} bunks. Wow. You've earned this buffer. Go enjoy a sandwich.`;
 }
 
-// Quote for recovery result
 function getRecoveryQuote(needed) {
   if (needed === 0) return "Already at target. Why are you here? Go home.";
   if (needed <= 3) return `Only ${needed} more. You can do this standing on your head.`;
@@ -223,354 +197,149 @@ function el(tag, attrs = {}, children = []) {
   return e;
 }
 
-function renderTool(container, { toast, markDone }) {
+function renderTool(container, { toast: _toast, markDone }) {
   container.innerHTML = "";
   const wrap = el("div");
 
-  // Tabs
-  const tabs = [
-    { id: "quick", label: "Quick Calc", icon: "calculator" },
-    { id: "bunk", label: "Bunk Predictor", icon: "moon" },
-    { id: "recover", label: "Recovery Planner", icon: "trending-up" },
-    { id: "tracker", label: "Subject Tracker", icon: "list-checks" },
-  ];
-
   wrap.innerHTML = `
-    <div class="pk-tabs" role="tablist">
-      ${tabs.map((t, i) => `<button class="pk-tab" role="tab" data-tab="${t.id}" aria-selected="${i === 0 ? "true" : "false"}">${t.label}</button>`).join("")}
-    </div>
-    <div id="att-content"></div>
-  `;
-
-  const content = wrap.querySelector("#att-content");
-
-  function selectTab(id) {
-    wrap.querySelectorAll(".pk-tab").forEach((t) =>
-      t.setAttribute("aria-selected", String(t.dataset.tab === id)));
-    content.innerHTML = "";
-    if (id === "quick") content.appendChild(renderQuick());
-    else if (id === "bunk") content.appendChild(renderBunk());
-    else if (id === "recover") content.appendChild(renderRecover());
-    else if (id === "tracker") content.appendChild(renderTracker());
-    if (window.lucide) window.lucide.createIcons();
-  }
-
-  wrap.querySelectorAll(".pk-tab").forEach((tab) => {
-    tab.addEventListener("click", () => selectTab(tab.dataset.tab));
-  });
-  selectTab("quick");
-
-  // ========================================================================
-  // TAB 1: Quick Calculator
-  // ========================================================================
-  function renderQuick() {
-    const card = el("div", { class: "pk-card" });
-    card.innerHTML = `
-      <p class="pk-text-sm pk-text-muted pk-mb-3">
+    <div class="pk-card">
+      <p class="pk-text-sm pk-text-muted pk-mb-3" style="text-align:center">
         Math you'll actually use. Unlike calculus.
       </p>
-      <div class="pk-grid-2 pk-mb-3">
-        <div>
-          <label class="pk-text-xs pk-text-muted pk-mb-2" style="display:block">Total classes held</label>
-          <input type="number" id="qc-total" min="0" placeholder="e.g. 40" style="width:100%;font-size:1.25rem;padding:0.75rem" />
-        </div>
-        <div>
-          <label class="pk-text-xs pk-text-muted pk-mb-2" style="display:block">Classes you attended</label>
-          <input type="number" id="qc-attended" min="0" placeholder="e.g. 30" style="width:100%;font-size:1.25rem;padding:0.75rem" />
-        </div>
-      </div>
-      <div id="qc-result" class="pk-text-center" style="padding:1.5rem 0"></div>
-      <div id="qc-quote" class="pk-text-center" style="margin-top:0.5rem"></div>
-    `;
 
-    const totalInput = card.querySelector("#qc-total");
-    const attInput = card.querySelector("#qc-attended");
-    const resultEl = card.querySelector("#qc-result");
-    const quoteEl = card.querySelector("#qc-quote");
-
-    function recalc() {
-      const total = clampPositive(totalInput.value);
-      const attended = clampPositive(attInput.value, 0);
-      if (total === 0 && attended === 0) {
-        resultEl.innerHTML = `<div class="pk-text-muted pk-text-sm">Type your numbers above.</div>`;
-        quoteEl.innerHTML = "";
-        return;
-      }
-      if (attended > total) {
-        resultEl.innerHTML = `<div style="color:#ef4444;font-size:1.1rem;font-weight:600">⏰ Time-traveler detected</div><div class="pk-text-sm pk-text-muted pk-mt-2">You can't attend more classes than were held. Unless you have a TARDIS.</div>`;
-        quoteEl.innerHTML = "";
-        return;
-      }
-      const pct = calcPercent(attended, total);
-      const { tone, quote } = getQuoteFor(pct);
-      const color = tone === "roast" ? "#10b981" : tone === "meh" ? "#10b981" : tone === "ok" ? "#10b981" : tone === "warn" ? "#f59e0b" : tone === "danger" ? "#ef4444" : tone === "critical" ? "#ef4444" : "var(--pk-fg-muted)";
-      resultEl.innerHTML = `
-        <div style="font-size:3rem;font-weight:800;color:${color};line-height:1">${pct.toFixed(1)}<span style="font-size:1.5rem">%</span></div>
-        <div class="pk-text-sm pk-text-muted pk-mt-2 pk-text-mono">${attended} / ${total} classes</div>
-      `;
-      quoteEl.innerHTML = `<div class="pk-text-sm" style="color:${color};font-style:italic;max-width:480px;margin:0 auto">"${quote}"</div>`;
-    }
-
-    totalInput.addEventListener("input", recalc);
-    attInput.addEventListener("input", recalc);
-    setTimeout(recalc, 50);
-    return card;
-  }
-
-  // ========================================================================
-  // TAB 2: Bunk Predictor
-  // ========================================================================
-  function renderBunk() {
-    const card = el("div", { class: "pk-card" });
-    card.innerHTML = `
-      <p class="pk-text-sm pk-text-muted pk-mb-3">
-        Will you survive skipping tomorrow's 8 AM? Let's find out.
-      </p>
-      <div class="pk-grid-2 pk-mb-3">
-        <div>
-          <label class="pk-text-xs pk-text-muted pk-mb-2" style="display:block">Total classes held so far</label>
-          <input type="number" id="bp-total" min="0" placeholder="e.g. 40" style="width:100%;font-size:1.1rem;padding:0.625rem" />
-        </div>
-        <div>
-          <label class="pk-text-xs pk-text-muted pk-mb-2" style="display:block">Classes attended so far</label>
-          <input type="number" id="bp-attended" min="0" placeholder="e.g. 30" style="width:100%;font-size:1.1rem;padding:0.625rem" />
-        </div>
-      </div>
-      <div class="pk-grid-2 pk-mb-3">
-        <div>
-          <label class="pk-text-xs pk-text-muted pk-mb-2" style="display:block">Target attendance %</label>
-          <input type="number" id="bp-target" min="0" max="100" value="75" style="width:100%;font-size:1.1rem;padding:0.625rem" />
-        </div>
-        <div>
-          <label class="pk-text-xs pk-text-muted pk-mb-2" style="display:block">Upcoming classes (next N)</label>
-          <input type="number" id="bp-upcoming" min="0" placeholder="e.g. 10" style="width:100%;font-size:1.1rem;padding:0.625rem" />
-        </div>
-      </div>
-      <div id="bp-result" class="pk-text-center" style="padding:1.5rem 0"></div>
-    `;
-
-    const totalInput = card.querySelector("#bp-total");
-    const attInput = card.querySelector("#bp-attended");
-    const targetInput = card.querySelector("#bp-target");
-    const upcomingInput = card.querySelector("#bp-upcoming");
-    const resultEl = card.querySelector("#bp-result");
-
-    function recalc() {
-      const total = clampPositive(totalInput.value);
-      const attended = clampPositive(attInput.value, 0);
-      const target = Math.max(0, Math.min(100, clampPositive(targetInput.value, 75)));
-      const upcoming = clampPositive(upcomingInput.value, 0);
-
-      if (total === 0 || upcoming === 0) {
-        resultEl.innerHTML = `<div class="pk-text-muted pk-text-sm">Fill in all four fields. No shortcuts here.</div>`;
-        return;
-      }
-      if (attended > total) {
-        resultEl.innerHTML = `<div style="color:#ef4444;font-weight:600">Attended > held. Check your inputs, time-traveler.</div>`;
-        return;
-      }
-      const bunks = calcMaxBunks(attended, total, target, upcoming);
-      const finalAttended = attended + (upcoming - bunks);
-      const finalTotal = total + upcoming;
-      const finalPct = (finalAttended / finalTotal) * 100;
-      const quote = getBunkQuote(bunks, upcoming);
-      resultEl.innerHTML = `
-        <div style="font-size:3rem;font-weight:800;color:var(--pk-accent);line-height:1">${bunks}</div>
-        <div class="pk-text-sm pk-text-muted pk-mt-2 pk-text-mono">out of ${upcoming} bunkable</div>
-        <div class="pk-text-sm pk-mt-3 pk-text-mono">after bunking: ${finalAttended}/${finalTotal} = ${finalPct.toFixed(2)}%</div>
-        <div class="pk-text-sm pk-mt-3" style="font-style:italic;max-width:480px;margin:0.75rem auto 0;color:var(--pk-fg)">"${quote}"</div>
-      `;
-    }
-
-    [totalInput, attInput, targetInput, upcomingInput].forEach((inp) => inp.addEventListener("input", recalc));
-    setTimeout(recalc, 50);
-    return card;
-  }
-
-  // ========================================================================
-  // TAB 3: Recovery Planner
-  // ========================================================================
-  function renderRecover() {
-    const card = el("div", { class: "pk-card" });
-    card.innerHTML = `
-      <p class="pk-text-sm pk-text-muted pk-mb-3">
-        Below 75%? Here's how many classes you need to attend in a row. Sorry.
-      </p>
-      <div class="pk-grid-2 pk-mb-3">
-        <div>
-          <label class="pk-text-xs pk-text-muted pk-mb-2" style="display:block">Total classes held</label>
-          <input type="number" id="rp-total" min="0" placeholder="e.g. 40" style="width:100%;font-size:1.1rem;padding:0.625rem" />
-        </div>
-        <div>
-          <label class="pk-text-xs pk-text-muted pk-mb-2" style="display:block">Classes attended</label>
-          <input type="number" id="rp-attended" min="0" placeholder="e.g. 25" style="width:100%;font-size:1.1rem;padding:0.625rem" />
-        </div>
-      </div>
+      <!-- Target percentage selector -->
       <div class="pk-mb-3">
-        <label class="pk-text-xs pk-text-muted pk-mb-2" style="display:block">Target attendance %</label>
-        <input type="number" id="rp-target" min="0" max="100" value="75" style="width:100%;font-size:1.1rem;padding:0.625rem" />
+        <label class="pk-text-xs pk-text-muted pk-mb-2" style="display:block" for="att-target">Percentage Required</label>
+        <select id="att-target" style="width:100%;padding:0.625rem 0.75rem;background:var(--pk-card-bg);border:1px solid var(--pk-border);border-radius:var(--pk-radius-sm);color:var(--pk-fg);font-size:1rem;cursor:pointer">
+          <option value="60">60%</option>
+          <option value="65">65%</option>
+          <option value="70">70%</option>
+          <option value="75" selected>75%</option>
+          <option value="80">80%</option>
+          <option value="85">85%</option>
+          <option value="90">90%</option>
+        </select>
       </div>
-      <div id="rp-result" class="pk-text-center" style="padding:1.5rem 0"></div>
-    `;
 
-    const totalInput = card.querySelector("#rp-total");
-    const attInput = card.querySelector("#rp-attended");
-    const targetInput = card.querySelector("#rp-target");
-    const resultEl = card.querySelector("#rp-result");
+      <!-- Present / Total inputs -->
+      <div class="pk-grid-2 pk-mb-3">
+        <div>
+          <label class="pk-text-xs pk-text-muted pk-mb-2" style="display:block" for="att-attended">Classes Attended</label>
+          <input type="number" id="att-attended" min="0" placeholder="e.g. 30" autocomplete="off"
+            style="width:100%;padding:0.75rem;background:var(--pk-card-bg);border:1px solid var(--pk-card-border);border-radius:var(--pk-radius-sm);color:var(--pk-fg);font-size:1.1rem;font-family:var(--pk-font-mono);outline:none" />
+        </div>
+        <div>
+          <label class="pk-text-xs pk-text-muted pk-mb-2" style="display:block" for="att-total">Total Classes Held</label>
+          <input type="number" id="att-total" min="0" placeholder="e.g. 40" autocomplete="off"
+            style="width:100%;padding:0.75rem;background:var(--pk-card-bg);border:1px solid var(--pk-card-border);border-radius:var(--pk-radius-sm);color:var(--pk-fg);font-size:1.1rem;font-family:var(--pk-font-mono);outline:none" />
+        </div>
+      </div>
 
-    function recalc() {
-      const total = clampPositive(totalInput.value);
-      const attended = clampPositive(attInput.value, 0);
-      const target = Math.max(0, Math.min(100, clampPositive(targetInput.value, 75)));
-      if (total === 0) {
-        resultEl.innerHTML = `<div class="pk-text-muted pk-text-sm">Fill in the numbers above.</div>`;
-        return;
-      }
-      if (attended > total) {
-        resultEl.innerHTML = `<div style="color:#ef4444;font-weight:600">Attended > held. Check your inputs.</div>`;
-        return;
-      }
+      <button class="pk-btn pk-btn--primary pk-btn--lg" id="att-calc" style="width:100%">
+        <i data-lucide="calculator"></i>
+        <span>Calculate</span>
+      </button>
+
+      <div id="att-output" class="pk-text-center" style="margin-top:1.5rem;min-height:140px"></div>
+    </div>
+
+    <!-- Info card -->
+    <div class="pk-card pk-mt-4">
+      <h3 style="font-size:0.95rem;margin-bottom:0.5rem">How this works</h3>
+      <p class="pk-text-sm pk-text-muted">
+        Enter your current attendance numbers and target percentage. If you're above target, you'll see
+        how many classes you can safely bunk. If you're below, you'll see how many consecutive classes you
+        need to attend to claw your way back. Sarcastic commentary is free of charge.
+      </p>
+    </div>
+  `;
+
+  const targetSelect = wrap.querySelector("#att-target");
+  const attInput = wrap.querySelector("#att-attended");
+  const totInput = wrap.querySelector("#att-total");
+  const calcBtn = wrap.querySelector("#att-calc");
+  const outputEl = wrap.querySelector("#att-output");
+
+  function calculate() {
+    const target = Math.max(0, Math.min(100, clampPositive(targetSelect.value, 75)));
+    const attended = clampPositive(attInput.value, 0);
+    const total = clampPositive(totInput.value, 0);
+
+    // Edge cases
+    if (total === 0 && attended === 0) {
+      outputEl.innerHTML = `<div class="pk-text-sm pk-text-muted">Type your numbers above and hit Calculate.</div>`;
+      return;
+    }
+    if (total === 0) {
+      outputEl.innerHTML = `<div class="pk-text-sm" style="color:#ef4444">Total can't be 0. Did you even attend college?</div>`;
+      return;
+    }
+    if (attended > total) {
+      outputEl.innerHTML = `
+        <div style="font-size:1.1rem;font-weight:600;color:#ef4444">⏰ Time-traveler detected</div>
+        <div class="pk-text-sm pk-text-muted pk-mt-2">You can't attend more classes than were held. Unless you have a TARDIS.</div>
+      `;
+      return;
+    }
+
+    const currentPct = (attended / total) * 100;
+    const q = getQuoteFor(currentPct);
+
+    if (currentPct >= target) {
+      // Above target → show bunks available
+      const bunks = calcBunks(attended, total, target);
+      const finalAttended = attended - bunks;
+      const finalPct = total > 0 ? (finalAttended / total) * 100 : 0;
+      const bunkQuote = getBunkQuote(bunks);
+      outputEl.innerHTML = `
+        <div class="pk-text-xs pk-text-muted pk-text-mono" style="letter-spacing:0.1em">CURRENT ATTENDANCE</div>
+        <div style="font-size:2.5rem;font-weight:800;color:${q.color};line-height:1.1;margin:0.25rem 0">${currentPct.toFixed(1)}<span style="font-size:1.25rem">%</span></div>
+        <div class="pk-text-xs pk-text-muted pk-text-mono">${attended} / ${total} classes</div>
+        <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--pk-card-border)">
+          <div class="pk-text-xs pk-text-muted pk-text-mono" style="letter-spacing:0.1em">YOU CAN BUNK</div>
+          <div style="font-size:3rem;font-weight:800;color:var(--pk-accent);line-height:1">${bunks}</div>
+          <div class="pk-text-xs pk-text-muted pk-text-mono">class${bunks === 1 ? "" : "es"} while staying ≥ ${target}%</div>
+          ${bunks > 0 ? `<div class="pk-text-xs pk-text-muted pk-text-mono pk-mt-2">after bunking ${bunks}: ${finalAttended}/${total} = ${finalPct.toFixed(2)}%</div>` : ""}
+        </div>
+        <div class="pk-text-sm pk-mt-3" style="font-style:italic;color:${q.color};max-width:480px;margin:0.75rem auto 0">"${bunkQuote}"</div>
+      `;
+    } else {
+      // Below target → show recovery needed
       const needed = calcRecovery(attended, total, target);
       const futureAttended = attended + needed;
       const futureTotal = total + needed;
       const futurePct = (futureAttended / futureTotal) * 100;
-      const currentPct = (attended / total) * 100;
-      const quote = getRecoveryQuote(needed);
-      resultEl.innerHTML = `
-        <div style="font-size:3rem;font-weight:800;color:var(--pk-accent);line-height:1">${needed}</div>
-        <div class="pk-text-sm pk-text-muted pk-mt-2 pk-text-mono">consecutive classes needed</div>
-        <div class="pk-text-sm pk-mt-3 pk-text-mono">from ${currentPct.toFixed(1)}% → ${futurePct.toFixed(2)}% (${futureAttended}/${futureTotal})</div>
-        <div class="pk-text-sm pk-mt-3" style="font-style:italic;max-width:480px;margin:0.75rem auto 0;color:var(--pk-fg)">"${quote}"</div>
-      `;
-    }
-
-    [totalInput, attInput, targetInput].forEach((inp) => inp.addEventListener("input", recalc));
-    setTimeout(recalc, 50);
-    return card;
-  }
-
-  // ========================================================================
-  // TAB 4: Subject Tracker
-  // ========================================================================
-  function renderTracker() {
-    const card = el("div", { class: "pk-card" });
-    card.innerHTML = `
-      <p class="pk-text-sm pk-text-muted pk-mb-3">
-        Track all your subjects. Watch the average betray you in real time.
-      </p>
-      <div class="pk-grid-2 pk-mb-3" style="gap:0.5rem">
-        <input type="text" id="tr-name" placeholder="Subject name (e.g. DBMS)" style="font-size:0.9rem;padding:0.625rem" />
-        <div class="pk-flex pk-gap-2">
-          <input type="number" id="tr-attended" min="0" placeholder="Attended" style="flex:1;font-size:0.9rem;padding:0.625rem" />
-          <input type="number" id="tr-total" min="0" placeholder="Total" style="flex:1;font-size:0.9rem;padding:0.625rem" />
+      const recoveryQuote = getRecoveryQuote(needed);
+      outputEl.innerHTML = `
+        <div class="pk-text-xs pk-text-muted pk-text-mono" style="letter-spacing:0.1em">CURRENT ATTENDANCE</div>
+        <div style="font-size:2.5rem;font-weight:800;color:${q.color};line-height:1.1;margin:0.25rem 0">${currentPct.toFixed(1)}<span style="font-size:1.25rem">%</span></div>
+        <div class="pk-text-xs pk-text-muted pk-text-mono">${attended} / ${total} classes</div>
+        <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--pk-card-border)">
+          <div class="pk-text-xs pk-text-muted pk-text-mono" style="letter-spacing:0.1em">YOU NEED TO ATTEND</div>
+          <div style="font-size:3rem;font-weight:800;color:var(--pk-accent);line-height:1">${needed}</div>
+          <div class="pk-text-xs pk-text-muted pk-text-mono">consecutive class${needed === 1 ? "" : "es"} to reach ${target}%</div>
+          <div class="pk-text-xs pk-text-muted pk-text-mono pk-mt-2">after attending ${needed}: ${futureAttended}/${futureTotal} = ${futurePct.toFixed(2)}%</div>
         </div>
-      </div>
-      <button class="pk-btn pk-btn--primary" id="tr-add" style="width:100%;margin-bottom:1rem">
-        <i data-lucide="plus"></i> Add subject
-      </button>
-      <div id="tr-list"></div>
-      <div id="tr-summary" class="pk-text-center" style="margin-top:1rem"></div>
-    `;
-
-    const nameInput = card.querySelector("#tr-name");
-    const attInput = card.querySelector("#tr-attended");
-    const totalInput = card.querySelector("#tr-total");
-    const addBtn = card.querySelector("#tr-add");
-    const listEl = card.querySelector("#tr-list");
-    const summaryEl = card.querySelector("#tr-summary");
-
-    function renderList() {
-      const subjects = loadSubjects();
-      listEl.innerHTML = "";
-      if (subjects.length === 0) {
-        listEl.innerHTML = `<div class="pk-text-center pk-text-muted pk-text-sm" style="padding:1.5rem 0">No subjects yet. Add one above. Or don't, I'm just a UI.</div>`;
-        summaryEl.innerHTML = "";
-        return;
-      }
-      let totalAtt = 0, totalHeld = 0;
-      subjects.forEach((s, idx) => {
-        const pct = calcPercent(s.attended, s.total);
-        const { tone, quote } = getQuoteFor(pct);
-        const color = tone === "roast" || tone === "meh" || tone === "ok" ? "#10b981" : tone === "warn" ? "#f59e0b" : "#ef4444";
-        totalAtt += s.attended;
-        totalHeld += s.total;
-        const row = el("div", { class: "pk-card pk-card--pad-sm", style: "margin-bottom:0.5rem;display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap" });
-        row.innerHTML = `
-          <div style="flex:1;min-width:120px">
-            <div style="font-weight:600;color:var(--pk-fg-strong);font-size:0.9rem">${escapeHtml(s.name)}</div>
-            <div class="pk-text-xs pk-text-muted pk-text-mono">${s.attended}/${s.total} classes</div>
-          </div>
-          <div style="font-size:1.5rem;font-weight:700;color:${color};min-width:80px;text-align:right">${pct.toFixed(1)}%</div>
-          <button class="pk-btn pk-btn--ghost pk-text-xs" data-del="${idx}" style="color:#ef4444" title="Delete">
-            <i data-lucide="trash-2"></i>
-          </button>
-        `;
-        listEl.appendChild(row);
-      });
-      // Wire delete buttons
-      listEl.querySelectorAll("[data-del]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const idx = parseInt(btn.dataset.del, 10);
-          const subjects = loadSubjects();
-          subjects.splice(idx, 1);
-          saveSubjects(subjects);
-          renderList();
-          toast("Subject removed. (Was it the professor's fault?)", "info", 2000);
-        });
-      });
-
-      const avg = calcPercent(totalAtt, totalHeld);
-      const { tone, quote } = getQuoteFor(avg);
-      const avgColor = tone === "roast" || tone === "meh" || tone === "ok" ? "#10b981" : tone === "warn" ? "#f59e0b" : "#ef4444";
-      summaryEl.innerHTML = `
-        <div class="pk-text-xs pk-text-muted pk-text-mono">OVERALL ATTENDANCE</div>
-        <div style="font-size:2.5rem;font-weight:800;color:${avgColor};line-height:1.1">${avg.toFixed(1)}%</div>
-        <div class="pk-text-xs pk-text-muted pk-text-mono">${totalAtt}/${totalHeld} classes across ${subjects.length} subject${subjects.length === 1 ? "" : "s"}</div>
-        <div class="pk-text-sm pk-mt-2" style="font-style:italic;color:${avgColor};max-width:480px;margin:0.5rem auto 0">"${quote}"</div>
+        <div class="pk-text-sm pk-mt-3" style="font-style:italic;color:${q.color};max-width:480px;margin:0.75rem auto 0">"${recoveryQuote}"</div>
       `;
     }
 
-    function addSubject() {
-      const name = nameInput.value.trim() || `Subject ${loadSubjects().length + 1}`;
-      const attended = clampPositive(attInput.value, 0);
-      const total = clampPositive(totalInput.value, 0);
-      if (total === 0) {
-        toast("Total can't be 0. Did you even attend college?", "error");
-        return;
-      }
-      if (attended > total) {
-        toast("Attended > Total. Time-traveler alert.", "error");
-        return;
-      }
-      const subjects = loadSubjects();
-      subjects.push({ name, attended, total });
-      saveSubjects(subjects);
-      nameInput.value = "";
-      attInput.value = "";
-      totalInput.value = "";
-      renderList();
-      toast(`"${name}" added. Godspeed.`, "success", 2000);
-      markDone();
-    }
-
-    addBtn.addEventListener("click", addSubject);
-    [nameInput, attInput, totalInput].forEach((inp) => {
-      inp.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") { e.preventDefault(); addSubject(); }
-      });
-    });
-
-    renderList();
-    return card;
+    markDone();
   }
+
+  calcBtn.addEventListener("click", calculate);
+  // Enter key also triggers calculate
+  [attInput, totInput].forEach((inp) => {
+    inp.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { e.preventDefault(); calculate(); }
+    });
+  });
+
+  // Initial placeholder
+  outputEl.innerHTML = `<div class="pk-text-sm pk-text-muted">Type your numbers above and hit Calculate.</div>`;
 
   container.appendChild(wrap);
-}
-
-// Simple HTML escape for subject names
-function escapeHtml(str) {
-  if (str == null) return "";
-  return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  if (window.lucide) window.lucide.createIcons();
 }
 
 // =========================================================================
